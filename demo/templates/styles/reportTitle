@@ -1,0 +1,19 @@
+<w:style w:type="paragraph" w:styleId="">
+  <w:name w:val="Title"/>
+  <w:basedOn w:val="1"/>
+  <w:next w:val="1"/>
+  <w:qFormat/>
+  <w:uiPriority w:val="0"/>
+  <w:pPr>
+    <w:keepNext/>
+    <w:keepLines/>
+    <w:spacing w:before="340" w:beforeLines="0" w:beforeAutospacing="0" w:after="330"
+        w:afterLines="0" w:afterAutospacing="0" w:line="576" w:lineRule="auto"/>
+    <w:outlineLvl w:val="0"/>
+  </w:pPr>
+  <w:rPr>
+    <w:b/>
+    <w:kern w:val="44"/>
+    <w:sz w:val="44"/>
+  </w:rPr>
+</w:style>

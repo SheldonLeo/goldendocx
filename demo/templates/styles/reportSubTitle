@@ -1,0 +1,20 @@
+<w:style w:type="paragraph">
+  <w:name w:val="SubTitle"/>
+  <w:basedOn w:val="1"/>
+  <w:next w:val="1"/>
+  <w:unhideWhenUsed/>
+  <w:qFormat/>
+  <w:uiPriority w:val="0"/>
+  <w:pPr>
+    <w:keepNext/>
+    <w:keepLines/>
+    <w:spacing w:before="260" w:beforeLines="0" w:beforeAutospacing="0" w:after="260"
+        w:afterLines="0" w:afterAutospacing="0" w:line="413" w:lineRule="auto"/>
+    <w:outlineLvl w:val="1"/>
+  </w:pPr>
+  <w:rPr>
+    <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:eastAsia="黑体"/>
+    <w:b/>
+    <w:sz w:val="32"/>
+  </w:rPr>
+</w:style>

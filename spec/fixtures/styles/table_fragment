@@ -1,0 +1,27 @@
+<w:style w:type="table">
+  <w:name w:val="Normal Table"/>
+  <w:qFormat/>
+  <w:semiHidden/>
+  <w:autoRedefine/>
+  <w:uiPriority w:val="0"/>
+  <w:pPr>
+    <w:widowControl w:val="0"/>
+    <w:jc w:val="both"/>
+  </w:pPr>
+  <w:tblPr>
+    <w:tblBorders>
+      <w:top w:val="single" w:color="E0E0E0" w:sz="4" w:space="0"/>
+      <w:left w:val="single" w:color="E0E0E0" w:sz="4" w:space="0"/>
+      <w:bottom w:val="single" w:color="E0E0E0" w:sz="4" w:space="0"/>
+      <w:right w:val="single" w:color="E0E0E0" w:sz="4" w:space="0"/>
+      <w:insideH w:val="single" w:color="E0E0E0" w:sz="4" w:space="0"/>
+      <w:insideV w:val="single" w:color="E0E0E0" w:sz="4" w:space="0"/>
+    </w:tblBorders>
+    <w:tblCellMar>
+      <w:top w:w="0" w:type="dxa"/>
+      <w:left w:w="108" w:type="dxa"/>
+      <w:bottom w:w="0" w:type="dxa"/>
+      <w:right w:w="108" w:type="dxa"/>
+    </w:tblCellMar>
+  </w:tblPr>
+</w:style>

@@ -1,0 +1,13 @@
+<w:style w:type="paragraph">
+  <w:name w:val="Title"/>
+  <w:qFormat/>
+  <w:uiPriority w:val="0"/>
+  <w:pPr>
+    <w:keepNext/>
+  </w:pPr>
+  <w:rPr>
+    <w:b/>
+    <w:kern w:val="44"/>
+    <w:sz w:val="44"/>
+  </w:rPr>
+</w:style>
