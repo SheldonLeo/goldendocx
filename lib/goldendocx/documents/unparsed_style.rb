@@ -9,7 +9,7 @@ module Goldendocx
         @node = node
       end
 
-      def to_element
+      def to_element(**_context)
         @node
       end
     end
