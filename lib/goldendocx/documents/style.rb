@@ -13,7 +13,7 @@ module Goldendocx
         @default = node['w:default']
       end
 
-      def to_element
+      def to_element(**_context)
         @node
       end
     end

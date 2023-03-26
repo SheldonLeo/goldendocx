@@ -15,7 +15,7 @@ module Goldendocx
         @node.name == 'w:sectPr'
       end
 
-      def to_element
+      def to_element(**_context)
         @node
       end
     end

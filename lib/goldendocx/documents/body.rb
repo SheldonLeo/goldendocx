@@ -30,7 +30,7 @@ module Goldendocx
       end
 
       # FIXME: Override for children not in correctly order
-      def to_element
+      def to_element(**_context)
         Goldendocx.xml_serializer.build_element(root_tag) do |xml|
           components.each { |component| xml << component }
           xml << properties if properties

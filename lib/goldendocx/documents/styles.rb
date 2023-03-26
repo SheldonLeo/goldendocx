@@ -59,8 +59,10 @@ module Goldendocx
         styles.find { |s| s.type == 'table' && s.name == style_name }
       end
 
-      # FIXME: Not a good implementation for Nokogiri compatibility
       def add_style(fragment)
+        # FIXME: Not a good implementation for Nokogiri compatibility
+        raise NotImplementedError unless Goldendocx.config.xml_serializer == :ox
+
         style_id = (@styles.size + 1).to_s
         style = Goldendocx.xml_serializer.parse(fragment)
         style['w:styleId'] = style_id if style['w:styleId'].nil? || style['w:styleId'].empty?
