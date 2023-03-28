@@ -13,6 +13,11 @@ module Goldendocx
 
         embeds_many :axes, class_name: 'Goldendocx::Charts::Properties::AxisProperty'
         embeds_many :series, class_name: 'Goldendocx::Charts::Series'
+
+        def initialize
+          build_axis(axis_id: 9374902)
+          build_axis(axis_id: 2094739)
+        end
       end
     end
   end

@@ -19,11 +19,12 @@ describe Goldendocx::Components::LineChart do
       chart.add_series('Ser1', ['A'], [1])
 
       expect(xml).to include('<c:lineChart>')
-      expect(xml).to include('<c:grouping val="standard"/>')
-      expect(xml).to include('<c:axId val="9374902"/>')
-      expect(xml).to include('<c:axId val="2094739"/>')
-      expect(xml).to include('<c:cat><c:strLit><c:ptCount val="1"/><c:pt idx="0"><c:v>A</c:v></c:pt></c:strLit></c:cat>')
-      expect(xml).to include('<c:numLit><c:ptCount val="1"/><c:pt idx="0"><c:v>1</c:v></c:pt></c:numLit>')
+      line_chart_xml = xml.match(%r{<c:lineChart>(.*)</c:lineChart>})[0]
+      expect(line_chart_xml).to include('<c:grouping val="standard"/>')
+      expect(line_chart_xml).to include('<c:axId val="9374902"/>')
+      expect(line_chart_xml).to include('<c:axId val="2094739"/>')
+      expect(line_chart_xml).to include('<c:cat><c:strLit><c:ptCount val="1"/><c:pt idx="0"><c:v>A</c:v></c:pt></c:strLit></c:cat>')
+      expect(line_chart_xml).to include('<c:numLit><c:ptCount val="1"/><c:pt idx="0"><c:v>1</c:v></c:pt></c:numLit>')
     end
   end
 end

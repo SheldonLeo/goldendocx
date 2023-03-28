@@ -18,6 +18,9 @@ module Goldendocx
         def initialize
           build_direction(direction: :col)
           build_grouping(value: :clustered)
+
+          build_axis(axis_id: 9374902)
+          build_axis(axis_id: 2094739)
         end
       end
     end

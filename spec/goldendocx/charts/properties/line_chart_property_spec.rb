@@ -4,7 +4,14 @@ describe Goldendocx::Charts::Properties::LineChartProperty do
   let(:property) { described_class.new }
 
   specify 'builds default line chart property xml' do
-    expect(property.to_xml).to eq('<c:lineChart><c:grouping val="standard"/></c:lineChart>')
+    expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
+      <c:lineChart>
+        <c:grouping val="standard"/>
+        <c:axId val="9374902"/>
+        <c:axId val="2094739"/>
+      </c:lineChart>
+    XML
+    expect(property.to_xml).to eq(expected_xml)
   end
 
   specify 'builds line chart property xml with axes' do

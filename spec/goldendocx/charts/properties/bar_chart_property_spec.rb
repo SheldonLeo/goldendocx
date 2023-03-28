@@ -4,7 +4,15 @@ describe Goldendocx::Charts::Properties::BarChartProperty do
   let(:property) { described_class.new }
 
   specify 'builds default bar chart property xml' do
-    expect(property.to_xml).to eq('<c:barChart><c:barDir val="bar"/><c:grouping val="clustered"/></c:barChart>')
+    expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
+      <c:barChart>
+        <c:barDir val="bar"/>
+        <c:grouping val="clustered"/>
+        <c:axId val="9374902"/>
+        <c:axId val="2094739"/>
+      </c:barChart>
+    XML
+    expect(property.to_xml).to eq(expected_xml)
   end
 
   specify 'builds bar chart property xml with axes' do
