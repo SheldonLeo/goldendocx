@@ -12,9 +12,10 @@ module Goldendocx
       tag :chartSpace
       concern_namespaces :c, :a, :r, :mc, :c14
 
-      embeds_one :rounded_corner, class_name: 'Goldendocx::Charts::Properties::RoundedCornerProperty', auto_build: false
+      embeds_one :rounded_corner, class_name: 'Goldendocx::Charts::Properties::RoundedCornerProperty', auto_build: true
       embeds_one :chart, class_name: 'Goldendocx::Charts::Properties::ChartProperty', auto_build: true
 
+      attr_accessor :name
       attr_reader :id, :series
 
       def initialize(chart_id, relationship_id, **attributes)
@@ -38,6 +39,10 @@ module Goldendocx
 
       def to_xml
         @paragraph.to_xml
+      end
+
+      def to_element(**context)
+        @paragraph.to_element(**context)
       end
 
       def write_to(zos)

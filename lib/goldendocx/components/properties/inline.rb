@@ -6,7 +6,7 @@ module Goldendocx
       class Inline
         include Goldendocx::Element
 
-        namespace :w
+        namespace :wp
         tag :inline
 
         embeds_one :extents, class_name: 'Goldendocx::Components::Properties::ExtentsProperty', auto_build: true

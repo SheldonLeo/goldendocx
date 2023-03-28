@@ -116,6 +116,10 @@ module Goldendocx
         @children ||= {}
       end
 
+      def concerning_ancestors
+        ancestors.filter { |ancestor| ancestor.include?(Goldendocx::Element) }
+      end
+
       private
 
       # :nocov:
@@ -142,17 +146,12 @@ module Goldendocx
       attributes.each { |key, value| send("#{key}=", value) if respond_to?("#{key}=") }
     end
 
-    # FIXME: Temporarily for 1 level
     def tag
-      return self.class.tag unless self.class.tag.nil?
-
-      self.class.superclass.tag if self.class.superclass.include?(Goldendocx::Element)
+      self.class.concerning_ancestors.find { |ancestor| ancestor.tag.present? }&.tag
     end
 
     def namespace
-      return self.class.namespace unless self.class.namespace.nil?
-
-      self.class.superclass.namespace if self.class.superclass.include?(Goldendocx::Element)
+      self.class.concerning_ancestors.find { |ancestor| ancestor.namespace.present? }&.namespace
     end
 
     def root_tag

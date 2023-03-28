@@ -30,12 +30,16 @@ module Goldendocx
       end
     end
 
+    def concerned_namespaces
+      self.class.concerning_ancestors.flat_map(&:concerned_namespaces)
+    end
+
+    def ignorable_namespaces
+      self.class.concerning_ancestors.flat_map(&:ignorable_namespaces)
+    end
+
     def to_document_xml
-      Goldendocx.xml_serializer.build_document_xml(
-        root_tag,
-        self.class.concerned_namespaces,
-        self.class.ignorable_namespaces
-      ) do |xml|
+      Goldendocx.xml_serializer.build_document_xml(root_tag, concerned_namespaces, ignorable_namespaces) do |xml|
         attributes.each { |name, value| xml[name] = value }
 
         yield(xml) if block_given?
