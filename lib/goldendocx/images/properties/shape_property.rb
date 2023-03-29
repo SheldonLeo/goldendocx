@@ -7,8 +7,8 @@ module Goldendocx
         include Goldendocx::Element
 
         # 1 : 0.618
-        DEFAULT_SHAPE_WIDTH = 15 * Goldendocx::Units::EMU_PER_CENTIMETER
-        DEFAULT_SHAPE_HEIGHT = 9.27 * Goldendocx::Units::EMU_PER_CENTIMETER
+        DEFAULT_SHAPE_WIDTH = Goldendocx::Units::EMU_PER_CENTIMETER * 15
+        DEFAULT_SHAPE_HEIGHT = Goldendocx::Units::EMU_PER_CENTIMETER * 9.27
 
         attr_accessor :width, :height
 

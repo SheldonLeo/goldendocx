@@ -8,8 +8,8 @@ module Goldendocx
     RELATIONSHIP_TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart'
     RELATIONSHIP_NAME_PATTERN = 'charts/chart%<id>s.xml'
 
-    DEFAULT_WIDTH = 16 * Goldendocx::Units::EMU_PER_CENTIMETER
-    DEFAULT_HEIGHT = 10 * Goldendocx::Units::EMU_PER_CENTIMETER
+    DEFAULT_WIDTH = Goldendocx::Units::EMU_PER_CENTIMETER * 16
+    DEFAULT_HEIGHT = Goldendocx::Units::EMU_PER_CENTIMETER * 10
 
     class InvalidChartType < StandardError
       def initialize

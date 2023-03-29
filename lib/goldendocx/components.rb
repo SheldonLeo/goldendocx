@@ -3,8 +3,8 @@
 module Goldendocx
   module Components
     # 1 : 0.618
-    DEFAULT_WIDTH = 15 * Goldendocx::Units::EMU_PER_CENTIMETER
-    DEFAULT_HEIGHT = 9.27 * Goldendocx::Units::EMU_PER_CENTIMETER
+    DEFAULT_WIDTH = Goldendocx::Units::EMU_PER_CENTIMETER * 15
+    DEFAULT_HEIGHT = Goldendocx::Units::EMU_PER_CENTIMETER * 9.27
   end
 end
 
