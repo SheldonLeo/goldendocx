@@ -1,5 +1,7 @@
 # The Ruby API for Microsoft Word
 
+[![Gem Version](https://badge.fury.io/rb/goldendocx.svg)](https://badge.fury.io/rb/goldendocx)
+
 Ruby APIs for manipulating Microsoft Word based upon OOXML standards.
 
 ## Installation
@@ -23,6 +25,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 Support both `ox` and `nokogiri` as XML serializer, and `ox` as default.
 
 You can customize with configuration
+
 ```ruby
 Goldendocx.configure do |config|
   config.xml_serializer = :nokogiri
@@ -30,6 +33,7 @@ end
 ```
 
 ### Compose MS Word
+
 - Read MS Word file and write to another path
     ```ruby
       docx = Goldendocx::Docx.new(docx_file_path)
@@ -71,6 +75,6 @@ end
       values = [13, 12, 9, 9, 8, 7, 7, 6, 5, 3]
       chart.add_series('地域分布详情数据', categories, values)
     ```
-  
+
 More demos view at [Demos](demo/)
 
