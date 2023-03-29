@@ -1,27 +1,34 @@
 # frozen_string_literal: true
 
-require 'goldendocx/units'
-require 'goldendocx/element'
-require 'goldendocx/document'
-
+require 'goldendocx/models'
 require 'goldendocx/components'
 require 'goldendocx/documents'
 require 'goldendocx/parts'
 
 module Goldendocx
   class Docx
+    include Goldendocx::HasAssociations
+
     attr_reader :unstructured_entries, :documents, :content_types
 
+    RELATIONSHIPS_XML_PATH = '_rels/.rels'
     STRUCTURED_ENTRIES = [
+      RELATIONSHIPS_XML_PATH,
+
       Goldendocx::Parts::ContentTypes::XML_PATH,
 
+      Goldendocx::Parts::Documents::RELATIONSHIPS_XML_PATH,
       Goldendocx::Documents::Body::XML_PATH,
-      Goldendocx::Documents::Relationships::XML_PATH,
       Goldendocx::Documents::Styles::XML_PATH
     ].freeze
 
+    associate :relationships, class_name: 'Goldendocx::Models::Relationships', path: RELATIONSHIPS_XML_PATH
+
     def initialize(file_path)
       docx_file = Zip::File.new(file_path)
+      associations.each_key do |association|
+        send(association).read_from(docx_file)
+      end
       @documents = Goldendocx::Parts::Documents.read_from(docx_file)
       @content_types = Goldendocx::Parts::ContentTypes.read_from(docx_file)
       @unstructured_entries = docx_file.entries.filter_map do |entry|
@@ -79,6 +86,10 @@ module Goldendocx
 
     def to_stream
       Zip::OutputStream.write_buffer do |zos|
+        associations.each_key do |association|
+          send(association).write_to(zos)
+        end
+
         zos.put_next_entry Goldendocx::Parts::ContentTypes::XML_PATH
         zos.write content_types.to_document_xml
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Goldendocx
-  module Documents
+  module Models
     class Relationship
       include Goldendocx::Element
 

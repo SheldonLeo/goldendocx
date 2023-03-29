@@ -1,14 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/string/inflections'
-
-ActiveSupport::Inflector.inflections do |inflect|
-  inflect.uncountable 'extents', 'image_data', 'data'
-  inflect.irregular 'axis', 'axes'
-
-  inflect.uncountable 'values' # TODO: Find better names
-end
-
 module Goldendocx
   module Element
     def self.included(base)
@@ -96,7 +87,7 @@ module Goldendocx
       end
 
       def embeds_one(name, class_name:, auto_build: false)
-        warning_naming_suggestion(name, name.to_s.singularize)
+        warning_naming_suggestion(__method__, name, name.to_s.singularize)
 
         children[name] = { class_name: class_name, multiple: false, auto_build: auto_build }
         create_children_getter(name)
@@ -105,7 +96,7 @@ module Goldendocx
       end
 
       def embeds_many(name, class_name:)
-        warning_naming_suggestion(name, name.to_s.pluralize)
+        warning_naming_suggestion(__method__, name, name.to_s.pluralize)
 
         children[name] = { class_name: class_name, multiple: true, auto_build: false }
         create_children_getter(name)
@@ -123,11 +114,11 @@ module Goldendocx
       private
 
       # :nocov:
-      def warning_naming_suggestion(name, suggestion_name)
+      def warning_naming_suggestion(method, name, suggestion_name)
         return if suggestion_name == name.to_s
 
         location = caller.find { |c| c.include?('goldendocx/') && !c.include?('goldendocx/element.rb') }
-        warn "warning: [embeds_one] `#{name}` better be singular `#{suggestion_name}` at #{location}"
+        warn "warning: [#{method}] `#{name}` better be `#{suggestion_name}` at #{location}"
       end
       # :nocov:
     end

@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
 module Goldendocx
-  module Documents
+  module Models
     class Relationships
       include Goldendocx::Document
 
-      XML_PATH = 'word/_rels/document.xml.rels'
       NAMESPACE = 'http://schemas.openxmlformats.org/package/2006/relationships'
 
       tag :Relationships
       attribute :xmlns, default: NAMESPACE, readonly: true
 
-      embeds_many :relationships, class_name: 'Goldendocx::Documents::Relationship'
+      embeds_many :relationships, class_name: 'Goldendocx::Models::Relationship'
 
       def size
         relationships.size
@@ -19,13 +18,13 @@ module Goldendocx
 
       def read_from(docx_file)
         paths = %w[Relationships Relationship]
-        Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH), paths).map do |node|
+        Goldendocx.xml_serializer.parse(docx_file.read(xml_path), paths).map do |node|
           build_relationship(id: node[:Id], type: node[:Type], target: node[:Target])
         end
       end
 
       def write_to(zos)
-        zos.put_next_entry XML_PATH
+        zos.put_next_entry xml_path
         zos.write to_document_xml
       end
 
