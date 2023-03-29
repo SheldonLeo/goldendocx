@@ -1,6 +1,7 @@
 # The Ruby API for Microsoft Word
 
 [![Gem Version](https://badge.fury.io/rb/goldendocx.svg)](https://badge.fury.io/rb/goldendocx)
+[![Coverage Status](https://coveralls.io/repos/github/SheldonLeo/goldendocx/badge.svg)](https://coveralls.io/github/SheldonLeo/goldendocx)
 
 Ruby APIs for manipulating Microsoft Word based upon OOXML standards.
 
