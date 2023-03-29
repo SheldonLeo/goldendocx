@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Goldendocx::Documents::Relationships do
+describe Goldendocx::Models::Relationships do
   let(:document) { Goldendocx::Parts::Documents.new }
   let(:relationships) { document.relationships }
 

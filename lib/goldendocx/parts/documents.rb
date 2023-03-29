@@ -4,22 +4,29 @@
 module Goldendocx
   module Parts
     class Documents
+      include Goldendocx::HasAssociations
+
       XML_PATH = 'word/'
+      RELATIONSHIPS_XML_PATH = 'word/_rels/document.xml.rels'
 
       attr_reader :document, # document.xml
                   :styles, # styles.xml
-                  :relationships, # _rels/document.xml.rels
                   :charts, # charts/
                   :medias # New Medias to media/
 
       attr_accessor :media_amount # Entries amount in directory media/ for generating relationship id
 
+      associate :relationships, class_name: 'Goldendocx::Models::Relationships', path: RELATIONSHIPS_XML_PATH
+
       class << self
         def read_from(docx_file)
           parts = Goldendocx::Parts::Documents.new
+          associations.each_key do |association|
+            parts.send(association).read_from(docx_file)
+          end
+
           parts.document.read_from(docx_file)
           parts.styles.read_from(docx_file)
-          parts.relationships.read_from(docx_file)
           parts.media_amount = docx_file.entries.count { |entry| entry.name.start_with?('word/media/') }
           parts
         end
@@ -28,13 +35,15 @@ module Goldendocx
       def initialize
         @document = Goldendocx::Documents::Document.new
         @styles = Goldendocx::Documents::Styles.new
-        @relationships = Goldendocx::Documents::Relationships.new
         @medias = []
       end
 
       def write_stream(zos)
+        associations.each_key do |association|
+          send(association).write_to(zos)
+        end
+
         styles.write_to(zos)
-        relationships.write_to(zos)
         document.write_to(zos)
         medias.each { |media| media.write_to(zos) }
         document.body.charts.each { |chart| chart.write_to(zos) }

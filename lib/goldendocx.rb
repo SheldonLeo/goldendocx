@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'zip'
+require 'extensions/active_support_extensions'
 
 require 'goldendocx/version'
-require 'goldendocx/docx'
 
 module Goldendocx
   autoload :Configuration, 'goldendocx/configuration'
@@ -70,3 +70,9 @@ module Goldendocx
     end
   end
 end
+
+require 'goldendocx/units'
+require 'goldendocx/element'
+require 'goldendocx/document'
+require 'goldendocx/has_associations'
+require 'goldendocx/docx'
