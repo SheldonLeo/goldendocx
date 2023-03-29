@@ -4,7 +4,8 @@ Basic implementation for generating a docx file based on docx file as template.
 
 Already available for production usages.
 
-### Features 
+### Features
+
 - Create texts for docx
 - Create tables for docx
 - Create images for docx
@@ -28,3 +29,15 @@ Mostly refactoring
 
 - Introduce `ActiveSupport` to make coding easier
 - Clean irrelevant demos
+
+## [0.2.2] - 2023-03-31(WIP)
+
+### Features
+
+- Add Github CI support
+
+
+### Fixes
+
+- Fix create charts issues
+- Fix Nokogiri XML serializer compatible issues
