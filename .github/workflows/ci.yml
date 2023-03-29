@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [ 'master' ]
+  pull_request:
+    branches: [ 'master' ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: [ '2.7' ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up
+        uses: ruby/setup-ruby@ee2113536afb7f793eed4ce60e8d3b26db912da4
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - name: Run tests (Including rubocop and rspec)
+        run: bundle exec rake
+      - name: Coveralls
+        uses: coverallsapp/github-action@v1

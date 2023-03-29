@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'activesupport', '~> 7.0'
-  spec.add_dependency 'nokogiri', '~> 1.12'
+  spec.add_dependency 'nokogiri', '~> 1.14'
   spec.add_dependency 'ox', '~> 2.14'
   spec.add_dependency 'rubyzip', '~> 2.3'
 
@@ -43,6 +43,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop-performance'
   spec.add_development_dependency 'rubocop-rspec'
   spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'simplecov-lcov'
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
