@@ -13,9 +13,17 @@ module Goldendocx
 
         def parse(xml, paths = [])
           xml = ::Nokogiri::XML(xml)
-          # Should with namespaces
-          xml = xml.xpath(paths.map { |path| path.include?(':') || path == '*' ? path : ['xmlns', path].join(':') }.join('/')) unless paths.empty?
-          xml
+          search(xml, paths)
+        end
+
+        def search(node, paths = [])
+          return node if paths.blank?
+
+          node.xpath(paths.map { |path| path.include?(':') || path == '*' ? path : ['xmlns', path].join(':') }.join('/'))
+        end
+
+        def find(node, paths = [])
+          search(node, paths).first
         end
 
         def build_xml(tag, &block)

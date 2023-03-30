@@ -2,11 +2,14 @@
 
 module Goldendocx
   module Element
-    def self.included(base)
-      base.extend(ClassMethods)
+    extend ActiveSupport::Concern
+
+    included do
+      class_attribute :attributes, instance_accessor: false, default: {}
+      class_attribute :children, instance_accessor: false, default: {}
     end
 
-    module ClassMethods
+    class_methods do
       def tag(*args)
         @tag = args.first if args.any?
         @tag
@@ -15,6 +18,10 @@ module Goldendocx
       def namespace(*args)
         @namespace = args.first if args.any?
         @namespace
+      end
+
+      def root_tag
+        @root_tag ||= [namespace, tag].compact.join(':')
       end
 
       # alias_name: nil
@@ -39,11 +46,15 @@ module Goldendocx
         else
           attr_accessor named
         end
+
+        descendants.each do |subclass|
+          subclass.attribute(named, options)
+        end
       end
 
-      def attributes
-        @attributes ||= {}
-      end
+      # def attributes
+      #   @attributes ||= {}
+      # end
 
       def create_children_getter(name)
         options = children[name]
@@ -69,6 +80,7 @@ module Goldendocx
 
         define_method "#{name}=" do |value|
           value = value.to_s if value && class_name == 'String'
+          value = value.strftime('%Y-%m-%dT%H:%M:%SZ') if value && class_name == 'Time'
           instance_variable_set("@#{name}", value)
         end
       end
@@ -89,7 +101,7 @@ module Goldendocx
       def embeds_one(name, class_name:, auto_build: false)
         warning_naming_suggestion(__method__, name, name.to_s.singularize)
 
-        children[name] = { class_name: class_name, multiple: false, auto_build: auto_build }
+        self.children = children.merge(name => { class_name: class_name, multiple: false, auto_build: auto_build })
         create_children_getter(name)
         create_children_setter(name)
         create_children_builder(name)
@@ -98,17 +110,34 @@ module Goldendocx
       def embeds_many(name, class_name:)
         warning_naming_suggestion(__method__, name, name.to_s.pluralize)
 
-        children[name] = { class_name: class_name, multiple: true, auto_build: false }
+        self.children = children.merge(name => { class_name: class_name, multiple: true, auto_build: false })
         create_children_getter(name)
         create_children_builder(name)
       end
 
-      def children
-        @children ||= {}
-      end
-
       def concerning_ancestors
         ancestors.filter { |ancestor| ancestor.include?(Goldendocx::Element) }
+      end
+
+      def read_from(xml_node)
+        nodes = Goldendocx.xml_serializer.search(xml_node, [root_tag])
+
+        nodes.map do |node|
+          new_instance = new
+
+          attributes.each do |name, options|
+            attribute_tag = [options[:namespace], (options[:alias_name] || name)].compact.join(':')
+            new_instance.send("#{name}=", node[attribute_tag])
+          end
+
+          children.each do |name, options|
+            child_class = options[:class_name].constantize
+            children = child_class.read_from(node)
+            new_instance.instance_variable_set("@#{name}", options[:multiple] ? children : children.first)
+          end
+
+          new_instance
+        end
       end
 
       private
@@ -120,6 +149,7 @@ module Goldendocx
         location = caller.find { |c| c.include?('goldendocx/') && !c.include?('goldendocx/element.rb') }
         warn "warning: [#{method}] `#{name}` better be `#{suggestion_name}` at #{location}"
       end
+
       # :nocov:
     end
 
@@ -149,16 +179,8 @@ module Goldendocx
       @root_tag ||= [namespace, tag].compact.join(':')
     end
 
-    def siblings
-      return [] unless self.class.superclass.include?(Goldendocx::Element)
-
-      self.class.superclass.children.keys.flat_map { |name| send(name) }
-    end
-
     def children
-      self.class.children.keys.flat_map do |name|
-        send(name)
-      end.concat(siblings).compact
+      self.class.children.keys.flat_map { |name| send(name) }.compact
     end
 
     def to_element(**context)

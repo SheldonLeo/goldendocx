@@ -2,6 +2,7 @@
 
 require 'zip'
 require 'extensions/active_support_extensions'
+require 'extensions/string_extensions'
 
 require 'goldendocx/version'
 

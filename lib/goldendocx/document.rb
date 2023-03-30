@@ -4,8 +4,8 @@
 module Goldendocx
   module Document
     def self.included(base)
-      base.include(Goldendocx::Element)
       base.extend(ClassMethods)
+      base.include(Goldendocx::Element)
     end
 
     module ClassMethods
