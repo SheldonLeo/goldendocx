@@ -8,8 +8,17 @@ module Goldendocx
       class << self
         def parse(xml, paths = [])
           xml = ::Ox.parse(xml)
-          xml = xml.locate(paths.join('/')) unless paths.empty?
-          xml
+          search(xml, paths)
+        end
+
+        def search(node, paths = [])
+          return node if paths.blank?
+
+          node.locate(paths.join('/'))
+        end
+
+        def find(node, paths = [])
+          search(node, paths).first
         end
 
         def build_xml(tag, &block)
