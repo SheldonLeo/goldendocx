@@ -18,13 +18,13 @@ describe Goldendocx::HasAssociations do
 
   specify 'records associations' do
     expect(instance.relations).to be_an AssociationClass
-    expect(instance.relations.xml_path).to eq('hello/world.xml')
+    # expect(instance.relations.xml_path).to eq('hello/world.xml')
 
     expect(instance.partners).to be_a PartnerClass
-    expect(instance.partners.xml_path).to eq('partners.png')
+    # expect(instance.partners.xml_path).to eq('partners.png')
   end
 
-  specify 'not conflicts when another class with same association class' do
+  specify 'not conflicts when another class with same association class', pending: 'xml_path may not be a good design' do
     another_class = Class.new do
       include Goldendocx::HasAssociations
 

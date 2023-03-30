@@ -2,7 +2,7 @@
 
 require 'zip'
 require 'extensions/active_support_extensions'
-require 'extensions/string_extensions'
+require 'extensions/xml_serialize_extensions'
 
 require 'goldendocx/version'
 
@@ -14,6 +14,7 @@ module Goldendocx
     a14: 'http://schemas.microsoft.com/office/drawing/2010/main',
     c: 'http://schemas.openxmlformats.org/drawingml/2006/chart',
     c14: 'http://schemas.microsoft.com/office/drawing/2007/8/2/chart',
+    cp: 'http://schemas.openxmlformats.org/package/2006/metadata/core-properties',
     cx: 'http://schemas.microsoft.com/office/drawing/2014/chartex',
     cx1: 'http://schemas.microsoft.com/office/drawing/2015/9/8/chartex',
     cx2: 'http://schemas.microsoft.com/office/drawing/2015/10/21/chartex',
@@ -23,6 +24,9 @@ module Goldendocx
     cx6: 'http://schemas.microsoft.com/office/drawing/2016/5/12/chartex',
     cx7: 'http://schemas.microsoft.com/office/drawing/2016/5/13/chartex',
     cx8: 'http://schemas.microsoft.com/office/drawing/2016/5/14/chartex',
+    dc: 'http://purl.org/dc/elements/1.1/',
+    dcmitype: 'http://purl.org/dc/dcmitype/',
+    dcterms: 'http://purl.org/dc/terms/',
     m: 'http://schemas.openxmlformats.org/officeDocument/2006/math',
     mc: 'http://schemas.openxmlformats.org/markup-compatibility/2006',
     mo: 'http://schemas.microsoft.com/office/mac/office/2008/main',
@@ -44,7 +48,8 @@ module Goldendocx
     wpc: 'http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas',
     wpg: 'http://schemas.microsoft.com/office/word/2010/wordprocessingGroup',
     wpi: 'http://schemas.microsoft.com/office/word/2010/wordprocessingInk',
-    wps: 'http://schemas.microsoft.com/office/word/2010/wordprocessingShape'
+    wps: 'http://schemas.microsoft.com/office/word/2010/wordprocessingShape',
+    xsi: 'http://www.w3.org/2001/XMLSchema-instance'
   }.freeze
 
   class << self

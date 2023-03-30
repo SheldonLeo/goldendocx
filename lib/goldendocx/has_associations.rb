@@ -18,9 +18,7 @@ module Goldendocx
         define_method named do
           return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
 
-          new_instance = association_class.new.tap do |instance|
-            instance.define_singleton_method(:xml_path) { path }
-          end
+          new_instance = association_class.new
           instance_variable_set("@#{name}", new_instance)
         end
       end

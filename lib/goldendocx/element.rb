@@ -46,43 +46,26 @@ module Goldendocx
         else
           attr_accessor named
         end
-
-        descendants.each do |subclass|
-          subclass.attribute(named, options)
-        end
       end
 
-      # def attributes
-      #   @attributes ||= {}
-      # end
-
       def create_children_getter(name)
-        options = children[name]
-        class_name = options[:class_name]
-        multiple = options[:multiple]
-        auto_build = options[:auto_build]
-
         define_method name do
           return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
 
-          default_value = if multiple
-                            []
-                          else
-                            auto_build ? Kernel.const_get(class_name).new : nil
-                          end
-          instance_variable_set("@#{name}", default_value)
+          instance_variable_set("@#{name}", self.class.default_value(name))
         end
       end
 
-      def create_children_setter(name)
+      def default_value(name)
         options = children[name]
-        class_name = options[:class_name]
 
-        define_method "#{name}=" do |value|
-          value = value.to_s if value && class_name == 'String'
-          value = value.strftime('%Y-%m-%dT%H:%M:%SZ') if value && class_name == 'Time'
-          instance_variable_set("@#{name}", value)
-        end
+        return [] if options[:multiple]
+
+        options[:class_name].constantize.new if options[:auto_build]
+      end
+
+      def create_children_setter(name)
+        define_method("#{name}=") { |value| instance_variable_set("@#{name}", value) }
       end
 
       def create_children_builder(name)
@@ -91,7 +74,7 @@ module Goldendocx
         multiple = options[:multiple]
 
         define_method "build_#{name.to_s.singularize}" do |**attributes|
-          child = Kernel.const_get(class_name).new
+          child = class_name.constantize.new
           attributes.each { |key, value| child.send("#{key}=", value) if child.respond_to?("#{key}=") }
           multiple ? send(name) << child : instance_variable_set("@#{name}", child)
           child
@@ -119,25 +102,17 @@ module Goldendocx
         ancestors.filter { |ancestor| ancestor.include?(Goldendocx::Element) }
       end
 
-      def read_from(xml_node)
+      def read_from(xml_node, multiple: false)
         nodes = Goldendocx.xml_serializer.search(xml_node, [root_tag])
 
-        nodes.map do |node|
+        instances = nodes.map do |node|
           new_instance = new
-
-          attributes.each do |name, options|
-            attribute_tag = [options[:namespace], (options[:alias_name] || name)].compact.join(':')
-            new_instance.send("#{name}=", node[attribute_tag])
-          end
-
-          children.each do |name, options|
-            child_class = options[:class_name].constantize
-            children = child_class.read_from(node)
-            new_instance.instance_variable_set("@#{name}", options[:multiple] ? children : children.first)
-          end
-
+          new_instance.read_attributes(node)
+          new_instance.read_children(node)
           new_instance
         end
+
+        multiple ? Array(instances) : instances.first
       end
 
       private
@@ -163,6 +138,14 @@ module Goldendocx
       end
     end
 
+    def read_attributes(node)
+      attributes = self.class.attributes.each_with_object({}) do |(name, options), result|
+        attribute_tag = [options[:namespace], (options[:alias_name] || name)].compact.join(':')
+        result[name] = node[attribute_tag]
+      end
+      assign_attributes(**attributes)
+    end
+
     def assign_attributes(**attributes)
       attributes.each { |key, value| send("#{key}=", value) if respond_to?("#{key}=") }
     end
@@ -181,6 +164,14 @@ module Goldendocx
 
     def children
       self.class.children.keys.flat_map { |name| send(name) }.compact
+    end
+
+    def read_children(node)
+      self.class.children.each do |name, options|
+        child_class = options[:class_name].constantize
+        children = child_class.read_from(node, multiple: options[:multiple])
+        instance_variable_set("@#{name}", children)
+      end
     end
 
     def to_element(**context)

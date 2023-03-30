@@ -16,14 +16,7 @@ module Goldendocx
         relationships.size
       end
 
-      def read_from(docx_file)
-        paths = %w[Relationships Relationship]
-        Goldendocx.xml_serializer.parse(docx_file.read(xml_path), paths).map do |node|
-          build_relationship(id: node[:Id], type: node[:Type], target: node[:Target])
-        end
-      end
-
-      def write_to(zos)
+      def write_to(zos, xml_path)
         zos.put_next_entry xml_path
         zos.write to_document_xml
       end
