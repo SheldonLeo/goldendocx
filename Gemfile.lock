@@ -78,6 +78,7 @@ GEM
     simplecov-html (0.12.3)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
+    timecop (0.9.6)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.2.0)
@@ -96,6 +97,7 @@ DEPENDENCIES
   rubocop-rspec (~> 2.19)
   simplecov (~> 0.22.0)
   simplecov-lcov (~> 0.8.0)
+  timecop (~> 0.9.6)
 
 BUNDLED WITH
    2.3.23

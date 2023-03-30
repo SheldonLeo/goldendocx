@@ -174,10 +174,7 @@ describe Goldendocx::Element do
         XML
         node = Goldendocx.xml_serializer.parse(xml)
 
-        elements = element_class.read_from(node)
-        expect(elements.size).to eq(1)
-
-        element = elements.first
+        element = element_class.read_from(node)
         expect(element.spring).to eq('jdk11')
         expect(element.rails).to eq('7.0')
       end
@@ -233,10 +230,7 @@ describe Goldendocx::Element do
         XML
         node = Goldendocx.xml_serializer.parse(xml)
 
-        fathers = father_class.read_from(node)
-        expect(fathers.size).to eq(1)
-
-        father = fathers.first
+        father = father_class.read_from(node)
         expect(father.son).to be_present
         expect(father.son.name).to eq('Don')
         expect(father.son.status).to eq('Good')

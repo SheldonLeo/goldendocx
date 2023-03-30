@@ -21,8 +21,9 @@ module Goldendocx
       class << self
         def read_from(docx_file)
           parts = Goldendocx::Parts::Documents.new
-          associations.each_key do |association|
-            parts.send(association).read_from(docx_file)
+          associations.each do |association, options|
+            association_document = Goldendocx.xml_serializer.parse(docx_file.read(options[:path]))
+            parts.instance_variable_set("@#{association}", options[:class_name].constantize.read_from(association_document))
           end
 
           parts.document.read_from(docx_file)
@@ -39,8 +40,8 @@ module Goldendocx
       end
 
       def write_stream(zos)
-        associations.each_key do |association|
-          send(association).write_to(zos)
+        associations.each do |association, options|
+          send(association).write_to(zos, options[:path])
         end
 
         styles.write_to(zos)

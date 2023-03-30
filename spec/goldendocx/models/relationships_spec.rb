@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
 describe Goldendocx::Models::Relationships do
-  let(:document) { Goldendocx::Parts::Documents.new }
-  let(:relationships) { document.relationships }
-
-  describe '#read_from' do
+  describe '.read_from' do
     let(:docx_file) { Zip::File.new('spec/fixtures/BlankDocxTemplate.docx') }
+    let(:relationships_xml) { Goldendocx.xml_serializer.parse(docx_file.read('word/_rels/document.xml.rels')) }
 
     it 'reads relationships from docx file' do
-      expect do
-        relationships.read_from(docx_file)
-      end.to change { relationships.relationships.size }.by(4)
+      relationships = described_class.read_from(relationships_xml)
+      expect(relationships.relationships.size).to eq(4)
     end
   end
 end
