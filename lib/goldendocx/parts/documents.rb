@@ -12,13 +12,14 @@ module Goldendocx
       CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml'
 
       attr_reader :document, # document.xml
-                  :styles, # styles.xml
                   :charts, # charts/
                   :medias # New Medias to media/
 
       attr_accessor :media_amount # Entries amount in directory media/ for generating relationship id
 
       associate :relationships, class_name: 'Goldendocx::Models::Relationships', path: RELATIONSHIPS_XML_PATH
+
+      associate :styles, class_name: 'Goldendocx::Documents::Styles', path: Goldendocx::Documents::Styles::XML_PATH
 
       class << self
         def read_from(docx_file)
@@ -29,15 +30,20 @@ module Goldendocx
           end
 
           parts.document.read_from(docx_file)
-          parts.styles.read_from(docx_file)
+          # parts.styles.read_from(docx_file)
           parts.media_amount = docx_file.entries.count { |entry| entry.name.start_with?('word/media/') }
           parts
         end
       end
 
       def initialize
+        associations.each do |association, options|
+          instance_variable_set("@#{association}", options[:class_name].constantize.new)
+        end
+
+        relationships.add_relationship Goldendocx::Documents::Styles::TYPE, Goldendocx::Documents::Styles::XML_PATH
+
         @document = Goldendocx::Documents::Document.new
-        @styles = Goldendocx::Documents::Styles.new
         @medias = []
         @media_amount = 0
       end
@@ -47,7 +53,6 @@ module Goldendocx
           send(association).write_to(zos, options[:path])
         end
 
-        styles.write_to(zos)
         document.write_to(zos)
         medias.each { |media| media.write_to(zos) }
         document.body.charts.each { |chart| chart.write_to(zos) }
