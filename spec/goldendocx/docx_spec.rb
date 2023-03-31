@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 describe Goldendocx::Docx do
-  let(:docx_path) { 'spec/fixtures/BlankDocxTemplate.docx' }
-  let(:docx_file) { Zip::File.new(docx_path) }
-  let(:docx) { described_class.new(docx_path) }
+  let(:docx) { described_class.new }
 
-  context 'when new docx' do
+  context 'when read from docx' do
+    let(:docx_path) { 'spec/fixtures/BlankDocxTemplate.docx' }
+    let(:docx_file) { Zip::File.new(docx_path) }
+    let(:docx) { described_class.new.read_from(docx_path) }
+
     it 'load entries at word/' do
       expect(docx.documents).to be_a(Goldendocx::Parts::Documents)
     end
@@ -13,39 +15,39 @@ describe Goldendocx::Docx do
     it 'load [Content_Types].xml' do
       expect(docx.content_types).to be_a(Goldendocx::Parts::ContentTypes)
     end
-  end
 
-  describe '#write_to' do
-    let(:image) { File.open('spec/fixtures/docx.png') }
+    describe '#write_to' do
+      let(:image) { File.open('spec/fixtures/docx.png') }
 
-    it 'writes with exactly same entries' do
-      new_path = Tempfile.new(%w[newDocument .docx]).path
-      expect { docx.write_to(new_path) }.not_to raise_error
+      it 'writes with exactly same entries' do
+        new_path = Tempfile.new(%w[newDocument .docx]).path
+        expect { docx.write_to(new_path) }.not_to raise_error
 
-      new_entries = Zip::File.new(new_path).entries.map(&:name)
-      expect(new_entries).to match_array(docx_file.entries.map(&:name))
-    end
+        new_entries = Zip::File.new(new_path).entries.map(&:name)
+        expect(new_entries).to match_array(docx_file.entries.map(&:name))
+      end
 
-    it 'writes medias entries if has any' do
-      new_path = Tempfile.new(%w[newDocument .docx]).path
-      expect do
-        docx.create_image(image)
-        docx.write_to(new_path)
-      end.not_to raise_error
+      it 'writes medias entries if has any' do
+        new_path = Tempfile.new(%w[newDocument .docx]).path
+        expect do
+          docx.create_image(image)
+          docx.write_to(new_path)
+        end.not_to raise_error
 
-      new_entries = Zip::File.new(new_path).entries.map(&:name)
-      expect(new_entries).to match_array(docx_file.entries.map(&:name) + ['word/media/image1.png'])
-    end
+        new_entries = Zip::File.new(new_path).entries.map(&:name)
+        expect(new_entries).to match_array(docx_file.entries.map(&:name) + ['word/media/image1.png'])
+      end
 
-    it 'writes charts entries if has any' do
-      new_path = Tempfile.new(%w[newDocument .docx]).path
-      expect do
-        docx.create_chart(:line)
-        docx.write_to(new_path)
-      end.not_to raise_error
+      it 'writes charts entries if has any' do
+        new_path = Tempfile.new(%w[newDocument .docx]).path
+        expect do
+          docx.create_chart(:line)
+          docx.write_to(new_path)
+        end.not_to raise_error
 
-      new_entries = Zip::File.new(new_path).entries.map(&:name)
-      expect(new_entries).to match_array(docx_file.entries.map(&:name) + ['word/charts/chart1.xml'])
+        new_entries = Zip::File.new(new_path).entries.map(&:name)
+        expect(new_entries).to match_array(docx_file.entries.map(&:name) + ['word/charts/chart1.xml'])
+      end
     end
   end
 

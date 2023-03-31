@@ -5,7 +5,9 @@ module Goldendocx
     class Core
       include Goldendocx::Document
 
+      TYPE = 'http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties'
       NAMESPACE = 'http://schemas.openxmlformats.org/officeDocument/2006/extended-properties'
+      CONTENT_TYPE = 'application/vnd.openxmlformats-package.core-properties+xml'
 
       concern_namespaces :cp, :dc, :dcterms, :dcmitype, :xsi
 

@@ -6,8 +6,10 @@ module Goldendocx
     class Documents
       include Goldendocx::HasAssociations
 
+      TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument'
       XML_PATH = 'word/'
       RELATIONSHIPS_XML_PATH = 'word/_rels/document.xml.rels'
+      CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml'
 
       attr_reader :document, # document.xml
                   :styles, # styles.xml
@@ -37,6 +39,7 @@ module Goldendocx
         @document = Goldendocx::Documents::Document.new
         @styles = Goldendocx::Documents::Styles.new
         @medias = []
+        @media_amount = 0
       end
 
       def write_stream(zos)
