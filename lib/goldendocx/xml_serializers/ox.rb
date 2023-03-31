@@ -23,7 +23,7 @@ module Goldendocx
 
         def build_xml(tag, &block)
           xml = build_element(tag, &block)
-          ::Ox.dump(xml, indent: -1, with_xml: true)
+          ::Ox.dump(xml, indent: -1, with_xml: true, encoding: 'UTF-8')
         end
 
         def build_document_xml(tag, namespaces = [], ignore_namespaces = [], &block)

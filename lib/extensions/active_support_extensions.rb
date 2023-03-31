@@ -7,7 +7,7 @@ require 'active_support/core_ext/string/conversions'
 require 'active_support/concern'
 
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.uncountable 'extents', 'image_data', 'data'
+  inflect.uncountable 'extents', 'image_data', 'data', 'defaults'
   inflect.irregular 'axis', 'axes'
 
   inflect.uncountable 'values' # TODO: Find better names

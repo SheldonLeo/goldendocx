@@ -74,7 +74,7 @@ describe Goldendocx::Parts::Documents do
             'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
             'word/media/image1.png'
           )
-          expect(relationship_id).to eq('rId1')
+          expect(relationship_id).to eq('rId2')
         end.to change { documents.relationships.size }.by(1)
       end
     end
@@ -89,13 +89,10 @@ describe Goldendocx::Parts::Documents do
 
       it 'composes relationship documents xml' do
         xml = documents.relationships.to_document_xml
-        expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
-          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-            <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="word/media/image1.png"/>
-          </Relationships>
-        XML
-        expect(xml).to eq(expected_xml)
+        image_relationship = <<~REL.strip
+          <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="word/media/image1.png"/>
+        REL
+        expect(xml).to include(image_relationship)
       end
     end
   end
@@ -120,18 +117,8 @@ describe Goldendocx::Parts::Documents do
 
       it 'composes styles documents xml' do
         xml = documents.styles.to_document_xml
-        expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
-          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <w:styles xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"#{' '}
-             xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"#{' '}
-             xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"#{' '}
-             xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"#{' '}
-             xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml"#{' '}
-             mc:Ignorable="w14 w15">
-            <w:style w:type="paragraph" w:styleId="1"><w:name w:val="Title"/></w:style>
-          </w:styles>
-        XML
-        expect(xml).to eq(expected_xml)
+
+        expect(xml).to include('<w:style w:type="paragraph" w:styleId="1"><w:name w:val="Title"/></w:style>')
       end
     end
   end

@@ -48,6 +48,7 @@ module Goldendocx
       @content_types = Goldendocx::Parts::ContentTypes.new
       @content_types.add_override "/#{DOC_PROPERTIES_CORE_XML_PATH}", Goldendocx::Parts::Core::CONTENT_TYPE
       @content_types.add_override "/#{DOC_PROPERTIES_APP_XML_PATH}", Goldendocx::Parts::App::CONTENT_TYPE
+      @content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
       @content_types.add_override "/#{Goldendocx::Documents::Body::XML_PATH}", Goldendocx::Parts::Documents::CONTENT_TYPE
 
       @unstructured_entries = []
