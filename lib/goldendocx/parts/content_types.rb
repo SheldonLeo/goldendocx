@@ -11,6 +11,11 @@ module Goldendocx
       XML_PATH = '[Content_Types].xml'
       NAMESPACE = 'http://schemas.openxmlformats.org/package/2006/content-types'
 
+      REQUIRED_DEFAULTS = {
+        rels: 'application/vnd.openxmlformats-package.relationships+xml',
+        xml: 'application/xml'
+      }.freeze
+
       attr_reader :defaults, :overrides
 
       tag :Types
@@ -26,7 +31,9 @@ module Goldendocx
       end
 
       def initialize
-        @defaults = []
+        @defaults = REQUIRED_DEFAULTS.map do |extension, content_type|
+          Goldendocx::ContentTypes::Default.new(extension, content_type)
+        end
         @overrides = []
       end
 

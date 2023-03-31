@@ -10,8 +10,8 @@ module Goldendocx
       attribute :content_type, alias_name: :ContentType, readonly: true
 
       def initialize(extension, content_type)
-        @extension = extension
-        @content_type = content_type
+        @extension = extension.to_s
+        @content_type = content_type.to_s
       end
 
       def ==(other)

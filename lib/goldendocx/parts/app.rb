@@ -5,7 +5,9 @@ module Goldendocx
     class App
       include Goldendocx::Document
 
+      TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties'
       NAMESPACE = 'http://schemas.openxmlformats.org/officeDocument/2006/extended-properties'
+      CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.extended-properties+xml'
 
       tag :Properties
       attribute :xmlns, default: NAMESPACE, readonly: true

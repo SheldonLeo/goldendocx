@@ -3,6 +3,14 @@
 describe Goldendocx::Parts::ContentTypes do
   let(:docx_file) { Zip::File.new('spec/fixtures/BlankDocxTemplate.docx') }
 
+  specify 'sets required defaults when initialized' do
+    content_types = described_class.new
+    expect(content_types.defaults.size).to eq(2)
+    expect(content_types.defaults.map(&:extension)).to eq(%w[rels xml])
+
+    expect(content_types.overrides.size).to eq(0)
+  end
+
   describe '.read_from' do
     it 'reads from docx file and parse defaults and overrides' do
       content_types = described_class.read_from(docx_file)
@@ -59,6 +67,7 @@ describe Goldendocx::Parts::ContentTypes do
       expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+          <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
           <Default Extension="xml" ContentType="application/xml"/>
           <Default Extension="png" ContentType="image/png"/>
         </Types>

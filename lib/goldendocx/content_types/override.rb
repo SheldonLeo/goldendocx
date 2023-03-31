@@ -10,8 +10,8 @@ module Goldendocx
       attribute :content_type, alias_name: :ContentType, readonly: true
 
       def initialize(part_name, content_type)
-        @part_name = part_name
-        @content_type = content_type
+        @part_name = part_name.to_s
+        @content_type = content_type.to_s
       end
 
       def ==(other)
