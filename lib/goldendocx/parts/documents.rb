@@ -17,20 +17,22 @@ module Goldendocx
 
       attr_accessor :media_amount # Entries amount in directory media/ for generating relationship id
 
-      associate :relationships, class_name: 'Goldendocx::Models::Relationships', path: RELATIONSHIPS_XML_PATH
-
-      associate :styles, class_name: 'Goldendocx::Documents::Styles', path: Goldendocx::Documents::Styles::XML_PATH
+      relationships_at RELATIONSHIPS_XML_PATH
+      associate :styles, class_name: 'Goldendocx::Documents::Styles'
 
       class << self
         def read_from(docx_file)
           parts = Goldendocx::Parts::Documents.new
+
+          parts.read_relationships(docx_file)
+
           associations.each do |association, options|
-            association_document = Goldendocx.xml_serializer.parse(docx_file.read(options[:path]))
-            parts.instance_variable_set("@#{association}", options[:class_name].constantize.read_from(association_document))
+            association_class = options[:class_name].constantize
+            association_document = Goldendocx.xml_serializer.parse(docx_file.read(association_class::XML_PATH))
+            parts.instance_variable_set("@#{association}", association_class.read_from(association_document))
           end
 
           parts.document.read_from(docx_file)
-          # parts.styles.read_from(docx_file)
           parts.media_amount = docx_file.entries.count { |entry| entry.name.start_with?('word/media/') }
           parts
         end
@@ -41,7 +43,7 @@ module Goldendocx
           instance_variable_set("@#{association}", options[:class_name].constantize.new)
         end
 
-        relationships.add_relationship Goldendocx::Documents::Styles::TYPE, Goldendocx::Documents::Styles::XML_PATH
+        add_relationship Goldendocx::Documents::Styles::TYPE, Goldendocx::Documents::Styles::XML_PATH
 
         @document = Goldendocx::Documents::Document.new
         @medias = []
@@ -49,8 +51,10 @@ module Goldendocx
       end
 
       def write_stream(zos)
-        associations.each do |association, options|
-          send(association).write_to(zos, options[:path])
+        write_relationships(zos)
+
+        associations.each_key do |association|
+          send(association).write_to(zos)
         end
 
         document.write_to(zos)
@@ -78,14 +82,14 @@ module Goldendocx
 
       def create_image(image_data, options = {})
         image_media = add_image_media(image_data, options)
-        relationship_id = relationships.add_relationship(image_media.type, image_media.target)
+        relationship_id = add_relationship(image_media.type, image_media.target)
 
         document.body.create_image(relationship_id, options)
       end
 
       def create_embed_image(image_data, options = {})
         image_media = add_image_media(image_data, options)
-        relationship_id = relationships.add_relationship(image_media.type, image_media.target)
+        relationship_id = add_relationship(image_media.type, image_media.target)
 
         document.body.create_embed_image(relationship_id, options)
       end
@@ -105,7 +109,7 @@ module Goldendocx
 
         chart_id = document.body.charts.size + 1
 
-        relationship_id = relationships.add_relationship(
+        relationship_id = add_relationship(
           Goldendocx::Charts::RELATIONSHIP_TYPE,
           format(Goldendocx::Charts::RELATIONSHIP_NAME_PATTERN, id: chart_id)
         )
