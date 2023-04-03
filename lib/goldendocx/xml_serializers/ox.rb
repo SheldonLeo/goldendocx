@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'ox'
+require 'extensions/ox_extensions'
 
 module Goldendocx
   module XmlSerializers
@@ -12,14 +13,10 @@ module Goldendocx
           search(xml, paths)
         end
 
-        def search(node, paths = [])
+        def search(node, paths)
           return node if paths.blank?
 
           node.locate(paths.join('/'))
-        end
-
-        def find(node, paths = [])
-          search(node, paths).first
         end
 
         def build_xml(tag, &block)
@@ -52,22 +49,6 @@ module Goldendocx
           end
         end
       end
-    end
-  end
-end
-
-# FIXME: Temporarily here to provider syntactic sugar
-module Ox
-  class Element
-    def <<(node)
-      # FIXME: Add this line to transform element implicitly
-      node = node.public_send(:to_element) if node.respond_to?(:to_element)
-
-      raise 'argument to << must be a String or Ox::Node.' unless node.is_a?(String) || node.is_a?(Node)
-
-      @nodes = [] if !instance_variable_defined?(:@nodes) || @nodes.nil?
-      @nodes << node
-      self
     end
   end
 end

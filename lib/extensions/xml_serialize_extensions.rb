@@ -2,30 +2,32 @@
 
 class String
   def self.read_from(node, multiple: false)
-    value = node.nodes.pop
+    values = node.extract_contents
 
-    multiple ? [value.to_s] : value.to_s
+    multiple ? Array(values) : values.first
   end
 end
 
 class Time
   def self.read_from(node, multiple: false)
-    value = node.nodes.pop
+    values = node.extract_contents.map(&:to_time)
 
-    multiple ? [value.to_time] : value.to_time
+    multiple ? Array(values) : values.first
   end
 
-  def to_element
+  def to_element(**_context)
     strftime('%Y-%m-%dT%H:%M:%SZ')
   end
 end
 
 class Integer
   def self.read_from(node, multiple: false)
-    value = node.nodes.pop
+    values = node.extract_contents.map(&:to_i)
 
-    multiple ? [value.to_i] : value.to_i
+    multiple ? Array(values) : values.first
   end
 
-  alias to_element to_s
+  def to_element(**_context)
+    to_s
+  end
 end

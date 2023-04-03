@@ -3,7 +3,7 @@
 $LOAD_PATH.push "#{Dir.pwd}/lib"
 require 'goldendocx'
 
-docx = Goldendocx::Docx.new("#{Dir.pwd}/demo/templates/blankDocument.docx")
+docx = Goldendocx::Docx.new.read_from("#{Dir.pwd}/demo/templates/blankDocument.docx")
 
 docx.create_text('Hello World!')
 

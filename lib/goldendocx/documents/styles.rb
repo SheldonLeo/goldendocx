@@ -40,9 +40,6 @@ module Goldendocx
       end
 
       def add_style(fragment)
-        # FIXME: Not a good implementation for Nokogiri compatibility
-        raise NotImplementedError unless Goldendocx.config.xml_serializer == :ox
-
         style = Goldendocx::Documents::Style.read_from(Goldendocx.xml_serializer.parse(fragment))
         style.id = (styles.size + 1).to_s # Rearrange id to prevent duplicates
         styles << style

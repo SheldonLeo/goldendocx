@@ -2,8 +2,7 @@
 
 $LOAD_PATH.push "#{Dir.pwd}/lib"
 require 'goldendocx'
-
-docx = Goldendocx::Docx.new("#{Dir.pwd}/demo/templates/blankDocument.docx")
+docx = Goldendocx::Docx.new.read_from("#{Dir.pwd}/demo/templates/blankDocument.docx")
 
 # Register styles because default document without any style
 docx.add_style(File.read("#{Dir.pwd}/demo/templates/styles/reportTitle"))
