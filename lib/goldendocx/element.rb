@@ -112,13 +112,13 @@ module Goldendocx
 
       def read_from(xml_node, multiple: false)
         nodes = Goldendocx.xml_serializer.search(xml_node, [root_tag])
-        xml_node.nodes.reject! { |n| nodes.include?(n) }
+        nodes.each { |n| xml_node.unparsed_children.delete(n) }
 
         instances = nodes.map do |node|
           new_instance = new
           new_instance.read_attributes(node)
           new_instance.read_children(node)
-          new_instance.unparsed_children.concat node.nodes
+          new_instance.unparsed_children.concat node.unparsed_children.to_a
           new_instance
         end
 
@@ -149,7 +149,7 @@ module Goldendocx
     end
 
     def read_attributes(node)
-      node_attributes = node.attributes.with_indifferent_access
+      node_attributes = node.attributes_hash
 
       attributes = self.class.attributes.each_with_object({}) do |(name, options), result|
         attribute_tag = [options[:namespace], (options[:alias_name] || name)].compact.join(':')

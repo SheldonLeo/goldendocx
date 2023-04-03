@@ -28,8 +28,14 @@ SimpleCov.start do
 end
 
 require 'goldendocx'
-# Goldendocx.configure { |config| config.xml_serializer = :nokogiri }
+Goldendocx.configure { |config| config.xml_serializer = :nokogiri }
 
 Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
+
+RSpec.configure do |rspec|
+  rspec.expect_with :rspec do |c|
+    c.max_formatted_output_length = 1000
+  end
+end

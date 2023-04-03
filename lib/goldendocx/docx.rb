@@ -38,7 +38,7 @@ module Goldendocx
         add_relationship association_class::TYPE, association_class::XML_PATH
         @content_types.add_override "/#{association_class::XML_PATH}", association_class::CONTENT_TYPE
       end
-      
+
       @content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
       @content_types.add_override "/#{Goldendocx::Documents::Body::XML_PATH}", Goldendocx::Parts::Documents::CONTENT_TYPE
 

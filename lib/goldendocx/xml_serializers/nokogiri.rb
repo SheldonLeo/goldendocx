@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
+require 'extensions/nokogiri_extensions'
 
 module Goldendocx
   module XmlSerializers
@@ -11,27 +12,38 @@ module Goldendocx
           options.no_declaration
         end
 
+        # TODO: Nokogiri namespace is soooo strict....
+        # TODO: To read nokogiri source codes and try to understand how it works
         def parse(xml, paths = [])
-          xml = ::Nokogiri::XML(xml)
-          search(xml, paths)
+          document = ::Nokogiri::XML(xml)
+          missing_namespaces = document.errors.filter_map { |error| error.str1 if error.message.match?('Namespace.*not defined') }.uniq.compact
+          return search(document, paths) if missing_namespaces.blank?
+
+          new_document = ::Nokogiri::XML::Document.new.tap do |doc|
+            doc << ::Nokogiri::XML::Node.new('DummyRoot', doc).tap do |root|
+              missing_namespaces.each do |ns|
+                root.add_namespace ns, (Goldendocx::NAMESPACES[ns.to_sym] || "#{ns}:goldendocx")
+              end
+              root << document.root
+            end
+          end
+          search(new_document.at_xpath('DummyRoot'), paths)
         end
 
-        def search(node, paths = [])
+        def search(node, paths)
           return node if paths.blank?
 
-          node.xpath(paths.map { |path| path.include?(':') || path == '*' ? path : ['xmlns', path].join(':') }.join('/'))
-        end
-
-        def find(node, paths = [])
-          search(node, paths).first
+          search_paths = paths.map { |path| path.include?(':') || path == '*' ? path : ['xmlns', path].join(':') }
+          namespaces = node.namespaces.merge(node.document.namespaces)
+          node.xpath(search_paths.join('/'), namespaces)
         end
 
         def build_xml(tag, &block)
-          build_element(tag, &block).to_xml(indent: 0, save_with: DEFAULT_BUILD_OPTIONS).delete("\n")
+          CGI.unescapeHTML build_element(tag, &block).to_xml(indent: 0, save_with: DEFAULT_BUILD_OPTIONS).delete("\n")
         end
 
         def build_document_xml(tag, namespaces = [], ignore_namespaces = [], &block)
-          build_document(tag, namespaces, ignore_namespaces, &block).to_xml(indent: 0).delete("\n")
+          CGI.unescapeHTML build_document(tag, namespaces, ignore_namespaces, &block).to_xml(indent: 0).delete("\n")
         end
 
         def build_document(tag, namespaces = [], ignore_namespaces = [])
@@ -49,25 +61,10 @@ module Goldendocx
 
         def build_element(tag, parent: nil)
           parent ||= ::Nokogiri::XML('<?xml version="1.0"')
-          ::Nokogiri::XML::Node.new(tag, parent).tap do |element|
+          ::Nokogiri::XML::Node.new(tag.to_s, parent).tap do |element|
             yield(element) if block_given?
           end
         end
-      end
-    end
-  end
-end
-
-# FIXME: Temporarily here to provider syntactic sugar
-module Nokogiri
-  module XML
-    class Node
-      def <<(node_or_tags)
-        # FIXME: Add this line to transform element implicitly
-        node_or_tags = node_or_tags.public_send(:to_element, parent: self) if node_or_tags.respond_to?(:to_element)
-
-        add_child(node_or_tags)
-        self
       end
     end
   end

@@ -40,28 +40,6 @@ RSpec.shared_context 'with xml serializer' do
     end
   end
 
-  describe '.find' do
-    let!(:xml) do
-      <<~XML
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-          <Default Extension="xml" ContentType="application/xml"/>
-          <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
-        </Types>
-      XML
-    end
-    let!(:node) { described_class.parse(xml) }
-
-    it 'finds first xml elements at specific paths' do
-      element = described_class.find(node, %w[Types Override])
-      expect(element[:PartName]).to eq('/word/document.xml')
-    end
-
-    it 'finds nil if searches nothing' do
-      expect(described_class.find(node, %w[Types Type])).to be_nil
-    end
-  end
-
   describe '.build_xml' do
     it 'builds xml with given block' do
       expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
