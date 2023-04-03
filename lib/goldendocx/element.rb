@@ -7,6 +7,14 @@ module Goldendocx
     included do
       class_attribute :attributes, instance_accessor: false, default: {}
       class_attribute :children, instance_accessor: false, default: {}
+
+      def unparsed_attributes
+        @unparsed_attributes ||= {}
+      end
+
+      def unparsed_children
+        @unparsed_children ||= []
+      end
     end
 
     class_methods do
@@ -104,11 +112,13 @@ module Goldendocx
 
       def read_from(xml_node, multiple: false)
         nodes = Goldendocx.xml_serializer.search(xml_node, [root_tag])
+        xml_node.nodes.reject! { |n| nodes.include?(n) }
 
         instances = nodes.map do |node|
           new_instance = new
           new_instance.read_attributes(node)
           new_instance.read_children(node)
+          new_instance.unparsed_children.concat node.nodes
           new_instance
         end
 
@@ -139,11 +149,15 @@ module Goldendocx
     end
 
     def read_attributes(node)
+      node_attributes = node.attributes.with_indifferent_access
+
       attributes = self.class.attributes.each_with_object({}) do |(name, options), result|
         attribute_tag = [options[:namespace], (options[:alias_name] || name)].compact.join(':')
-        result[name] = node[attribute_tag]
+        result[name] = node_attributes.delete(attribute_tag)
       end
       assign_attributes(**attributes)
+
+      unparsed_attributes.update(node_attributes)
     end
 
     def assign_attributes(**attributes)
@@ -174,23 +188,22 @@ module Goldendocx
       end
     end
 
-    def to_element(**context)
-      Goldendocx.xml_serializer.build_element(root_tag, **context) do |xml|
-        attributes.each { |name, value| xml[name] = value }
-        children.each { |child| xml << child }
-
-        yield(xml) if block_given?
-      end
+    def to_element(**context, &block)
+      Goldendocx.xml_serializer.build_element(root_tag, **context) { |xml| build_element(xml, &block) }
     end
 
-    def to_xml
-      Goldendocx.xml_serializer.build_xml(root_tag) do |xml|
-        attributes.each { |name, value| xml[name] = value }
+    def to_xml(&block)
+      Goldendocx.xml_serializer.build_xml(root_tag) { |xml| build_element(xml, &block) }
+    end
 
-        yield(xml) if block_given?
+    def build_element(xml)
+      attributes.each { |name, value| xml[name] = value }
+      unparsed_attributes.each { |name, value| xml[name] = value }
 
-        children.each { |child| xml << child }
-      end
+      children.each { |child| xml << child }
+      unparsed_children.each { |child| xml << child }
+
+      yield(xml) if block_given?
     end
   end
 end

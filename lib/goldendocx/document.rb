@@ -38,14 +38,8 @@ module Goldendocx
       self.class.concerning_ancestors.flat_map(&:ignorable_namespaces)
     end
 
-    def to_document_xml
-      Goldendocx.xml_serializer.build_document_xml(root_tag, concerned_namespaces, ignorable_namespaces) do |xml|
-        attributes.each { |name, value| xml[name] = value }
-
-        yield(xml) if block_given?
-
-        children.each { |child| xml << child }
-      end
+    def to_document_xml(&block)
+      Goldendocx.xml_serializer.build_document_xml(root_tag, concerned_namespaces, ignorable_namespaces) { |xml| build_element(xml, &block) }
     end
   end
 end
