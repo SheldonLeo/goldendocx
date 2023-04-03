@@ -12,54 +12,51 @@ module Goldendocx
     attr_reader :unstructured_entries, :documents, :content_types
 
     RELATIONSHIPS_XML_PATH = '_rels/.rels'
-    DOC_PROPERTIES_APP_XML_PATH = 'docProps/app.xml'
-    DOC_PROPERTIES_CORE_XML_PATH = 'docProps/core.xml'
 
     STRUCTURED_ENTRIES = [
       RELATIONSHIPS_XML_PATH,
 
-      DOC_PROPERTIES_APP_XML_PATH,
-      DOC_PROPERTIES_CORE_XML_PATH,
-
       Goldendocx::Parts::ContentTypes::XML_PATH,
+      Goldendocx::Parts::App::XML_PATH,
+      Goldendocx::Parts::Core::XML_PATH,
 
-      Goldendocx::Parts::Documents::RELATIONSHIPS_XML_PATH,
       Goldendocx::Documents::Body::XML_PATH,
       Goldendocx::Documents::Styles::XML_PATH
     ].freeze
 
-    # TODO: Better hide this?
-    associate :relationships, class_name: 'Goldendocx::Models::Relationships', path: RELATIONSHIPS_XML_PATH
-
-    associate :app, class_name: 'Goldendocx::Parts::App', path: DOC_PROPERTIES_APP_XML_PATH
-    associate :core, class_name: 'Goldendocx::Parts::Core', path: DOC_PROPERTIES_CORE_XML_PATH
+    relationships_at RELATIONSHIPS_XML_PATH
+    associate :app, class_name: 'Goldendocx::Parts::App'
+    associate :core, class_name: 'Goldendocx::Parts::Core'
 
     def initialize
-      associations.each do |association, options|
-        instance_variable_set("@#{association}", options[:class_name].constantize.new)
-      end
-
-      relationships.add_relationship Goldendocx::Parts::Core::TYPE, DOC_PROPERTIES_CORE_XML_PATH
-      relationships.add_relationship Goldendocx::Parts::App::TYPE, DOC_PROPERTIES_APP_XML_PATH
-      relationships.add_relationship Goldendocx::Parts::Documents::TYPE, Goldendocx::Documents::Body::XML_PATH
-
-      @documents = Goldendocx::Parts::Documents.new
-
       @content_types = Goldendocx::Parts::ContentTypes.new
-      @content_types.add_override "/#{DOC_PROPERTIES_CORE_XML_PATH}", Goldendocx::Parts::Core::CONTENT_TYPE
-      @content_types.add_override "/#{DOC_PROPERTIES_APP_XML_PATH}", Goldendocx::Parts::App::CONTENT_TYPE
+
+      associations.each do |association, options|
+        association_class = options[:class_name].constantize
+        instance_variable_set("@#{association}", association_class.new)
+
+        add_relationship association_class::TYPE, association_class::XML_PATH
+        @content_types.add_override "/#{association_class::XML_PATH}", association_class::CONTENT_TYPE
+      end
+      
       @content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
       @content_types.add_override "/#{Goldendocx::Documents::Body::XML_PATH}", Goldendocx::Parts::Documents::CONTENT_TYPE
 
+      @documents = Goldendocx::Parts::Documents.new
       @unstructured_entries = []
     end
 
     def read_from(file_path)
       docx_file = Zip::File.new(file_path)
+
+      read_relationships(docx_file)
+
       associations.each do |association, options|
-        association_document = Goldendocx.xml_serializer.parse(docx_file.read(options[:path]))
-        instance_variable_set("@#{association}", options[:class_name].constantize.read_from(association_document))
+        association_class = options[:class_name].constantize
+        association_document = Goldendocx.xml_serializer.parse(docx_file.read(association_class::XML_PATH))
+        instance_variable_set("@#{association}", association_class.read_from(association_document))
       end
+
       @documents = Goldendocx::Parts::Documents.read_from(docx_file)
       @content_types = Goldendocx::Parts::ContentTypes.read_from(docx_file)
       @unstructured_entries = docx_file.entries.filter_map do |entry|
@@ -119,8 +116,10 @@ module Goldendocx
 
     def to_stream
       Zip::OutputStream.write_buffer do |zos|
-        associations.each do |association, options|
-          send(association).write_to(zos, options[:path])
+        write_relationships(zos)
+
+        associations.each_key do |association|
+          send(association).write_to(zos)
         end
 
         zos.put_next_entry Goldendocx::Parts::ContentTypes::XML_PATH

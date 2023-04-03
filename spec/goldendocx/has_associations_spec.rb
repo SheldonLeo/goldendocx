@@ -5,8 +5,9 @@ describe Goldendocx::HasAssociations do
     Class.new do
       include Goldendocx::HasAssociations
 
-      associate :relations, class_name: 'AssociationClass', path: 'hello/world.xml'
-      associate :partners, class_name: 'PartnerClass', path: 'partners.png'
+      relationships_at 'relationship.rels'
+      associate :relations, class_name: 'AssociationClass'
+      associate :partners, class_name: 'PartnerClass'
     end
   end
   let(:instance) { klass.new }
@@ -17,24 +18,23 @@ describe Goldendocx::HasAssociations do
   end
 
   specify 'records associations' do
+    expect(instance.relationships_xml_path).to eq('relationship.rels')
     expect(instance.relations).to be_an AssociationClass
-    # expect(instance.relations.xml_path).to eq('hello/world.xml')
-
     expect(instance.partners).to be_a PartnerClass
-    # expect(instance.partners.xml_path).to eq('partners.png')
   end
 
-  specify 'not conflicts when another class with same association class', pending: 'xml_path may not be a good design' do
+  specify 'not conflicts when another class with same association class' do
     another_class = Class.new do
       include Goldendocx::HasAssociations
 
-      associate :news, class_name: 'AssociationClass', path: 'news.relations'
+      relationships_at '_rels/relationship.rels'
+      associate :news, class_name: 'AssociationClass'
     end
     another_instance = another_class.new
 
-    expect(instance.relations.xml_path).to eq('hello/world.xml')
+    expect(instance.relationships_xml_path).to eq('relationship.rels')
 
     expect(another_instance.news).to be_an AssociationClass
-    expect(another_instance.news.xml_path).to eq('news.relations')
+    expect(another_instance.relationships_xml_path).to eq('_rels/relationship.rels')
   end
 end

@@ -6,6 +6,7 @@ module Goldendocx
       include Goldendocx::Document
 
       TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties'
+      XML_PATH = 'docProps/app.xml'
       NAMESPACE = 'http://schemas.openxmlformats.org/officeDocument/2006/extended-properties'
       CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.extended-properties+xml'
 
@@ -25,8 +26,8 @@ module Goldendocx
         end
       end
 
-      def write_to(zos, xml_path)
-        zos.put_next_entry xml_path
+      def write_to(zos)
+        zos.put_next_entry XML_PATH
         zos.write to_document_xml
       end
 
