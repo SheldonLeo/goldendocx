@@ -3,18 +3,18 @@
 module Goldendocx
   module Documents
     class Style
-      attr_reader :node, :id, :type, :name
+      include Goldendocx::Element
 
-      def initialize(node)
-        @node = node
-        @id = node['w:styleId']
-        @type = node['w:type']
-        @name = node.public_send(:'w:name')['w:val']
-        @default = node['w:default']
-      end
+      namespace :w
+      tag :style
 
-      def to_element(**_context)
-        @node
+      attribute :id, alias_name: :styleId, namespace: :w
+      attribute :type, namespace: :w
+
+      embeds_one :style_name, class_name: 'Goldendocx::Documents::Properties::StyleNameProperty', auto_build: true
+
+      def name
+        style_name.name
       end
     end
   end

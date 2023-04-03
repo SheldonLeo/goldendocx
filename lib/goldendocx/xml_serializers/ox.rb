@@ -8,6 +8,7 @@ module Goldendocx
       class << self
         def parse(xml, paths = [])
           xml = ::Ox.parse(xml)
+          xml = ::Ox::Document.new.tap { |document| document << xml } unless xml.is_a?(::Ox::Document)
           search(xml, paths)
         end
 

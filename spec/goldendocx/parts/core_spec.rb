@@ -42,7 +42,7 @@ describe Goldendocx::Parts::Core do
           <dc:creator>Epicurus</dc:creator>
           <dcterms:created xsi:type="dcterms:W3CDTF">2023-02-17T07:29:00Z</dcterms:created>
           <cp:revision>2</cp:revision>
-          <dc:lastModifiedBy>Goldendocx_0.2.2</dc:lastModifiedBy>
+          <cp:lastModifiedBy>Goldendocx_0.2.2</cp:lastModifiedBy>
           <dcterms:modified xsi:type="dcterms:W3CDTF">2023-11-15T00:00:00Z</dcterms:modified>
         </cp:coreProperties>
       XML

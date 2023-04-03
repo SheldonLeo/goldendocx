@@ -118,7 +118,7 @@ describe Goldendocx::Parts::Documents do
       it 'composes styles documents xml' do
         xml = documents.styles.to_document_xml
 
-        expect(xml).to include('<w:style w:type="paragraph" w:styleId="1"><w:name w:val="Title"/></w:style>')
+        expect(xml).to include('<w:style w:styleId="1" w:type="paragraph"><w:name w:val="Title"/></w:style>')
       end
     end
   end

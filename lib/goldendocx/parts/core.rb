@@ -24,7 +24,7 @@ module Goldendocx
         def read_from(xml_node, multiple: nil)
           core = super(xml_node, multiple: multiple)
           revision = (core.revision || core.build_revision)
-          revision.value = revision.value + 1
+          revision.value = revision.value.to_i + 1
           core.build_updater(name: "Goldendocx_#{Goldendocx::VERSION}")
           core.build_updated_at(timestamp: Time.now)
           core

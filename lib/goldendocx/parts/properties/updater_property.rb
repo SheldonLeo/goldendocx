@@ -6,7 +6,7 @@ module Goldendocx
       class UpdaterProperty
         include Goldendocx::Element
 
-        namespace :dc
+        namespace :cp
         tag :lastModifiedBy
 
         embeds_one :name, class_name: 'String'
