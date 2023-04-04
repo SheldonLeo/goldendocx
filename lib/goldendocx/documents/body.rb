@@ -7,33 +7,41 @@ module Goldendocx
 
       XML_PATH = 'word/document.xml'
 
-      attr_reader :components, :properties, :charts
+      attr_reader :components, :charts
 
       namespace :w
       tag :body
 
+      # TODO: Try to distinguish these paragraphs
       embeds_many :texts, class_name: 'Goldendocx::Components::Text'
       embeds_many :images, class_name: 'Goldendocx::Components::Image'
+
       embeds_many :tables, class_name: 'Goldendocx::Components::Table'
+
+      embeds_one :section_property, class_name: 'Goldendocx::Documents::Properties::SectionProperty', auto_build: true
+
+      class << self
+        def read_from(xml_node, multiple: nil)
+          document = super(xml_node, multiple: multiple)
+
+          Goldendocx.xml_serializer.search(xml_node, %w[w:body *]).map do |node|
+            document.components << node if %w[w:p w:tbl].include?(node.tag_name)
+          end
+
+          document
+        end
+      end
 
       def initialize
         @components = []
         @charts = []
       end
 
-      def read_from(docx_file)
-        Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH), %w[w:document w:body *]).map do |node|
-          element = Goldendocx::Documents::Element.new(node)
-          @components << element if element.component?
-          @properties = element if element.properties?
-        end
-      end
-
       # FIXME: Override for children not in correctly order
       def to_element(**_context)
         Goldendocx.xml_serializer.build_element(root_tag) do |xml|
           components.each { |component| xml << component }
-          xml << properties if properties
+          xml << section_property if section_property
 
           yield(xml) if block_given?
         end

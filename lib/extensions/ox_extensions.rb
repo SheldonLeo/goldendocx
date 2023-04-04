@@ -29,7 +29,7 @@ module Ox
     end
 
     def attributes_hash
-      attributes.with_indifferent_access
+      attributes.with_indifferent_access.reject { |k, _| k.to_s.start_with?('xmlns') || k.to_s == 'mc:Ignorable' }
     end
   end
 end

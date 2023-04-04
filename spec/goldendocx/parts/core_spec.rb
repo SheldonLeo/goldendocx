@@ -3,7 +3,7 @@
 describe Goldendocx::Parts::Core do
   let(:core) { described_class.new }
   let(:docx_file) { Zip::File.new('spec/fixtures/BlankDocxTemplate.docx') }
-  let(:core_xml) { Goldendocx.xml_serializer.parse(docx_file.read('docProps/core.xml')) }
+  let(:core_xml) { Goldendocx.xml_serializer.parse(docx_file.read(described_class::XML_PATH)) }
 
   before do
     Timecop.freeze(Time.local(2023, 11, 15))

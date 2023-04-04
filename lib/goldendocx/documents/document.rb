@@ -5,7 +5,9 @@ module Goldendocx
     class Document
       include Goldendocx::Document
 
+      TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument'
       XML_PATH = 'word/document.xml'
+      CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml'
 
       namespace :w
       tag :document
@@ -15,10 +17,6 @@ module Goldendocx
       ignore_namespaces :w14, :w15, :w16se, :w16cid, :wp14
 
       embeds_one :body, class_name: 'Goldendocx::Documents::Body', auto_build: true
-
-      def read_from(docx_file)
-        body.read_from(docx_file)
-      end
 
       def write_to(zos)
         zos.put_next_entry XML_PATH

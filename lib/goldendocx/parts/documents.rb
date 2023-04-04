@@ -6,10 +6,7 @@ module Goldendocx
     class Documents
       include Goldendocx::HasAssociations
 
-      TYPE = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument'
-      XML_PATH = 'word/'
       RELATIONSHIPS_XML_PATH = 'word/_rels/document.xml.rels'
-      CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml'
 
       attr_reader :document, # document.xml
                   :charts, # charts/
@@ -19,13 +16,13 @@ module Goldendocx
 
       relationships_at RELATIONSHIPS_XML_PATH
       associate :styles, class_name: 'Goldendocx::Documents::Styles'
+      associate :document, class_name: 'Goldendocx::Documents::Document', relationship: false
 
       class << self
         def read_from(docx_file)
           parts = Goldendocx::Parts::Documents.new
           parts.read_relationships(docx_file)
           parts.read_associations(docx_file)
-          parts.document.read_from(docx_file)
           parts.media_amount = docx_file.entries.count { |entry| entry.name.start_with?('word/media/') }
           parts
         end
@@ -33,12 +30,11 @@ module Goldendocx
 
       def initialize
         associations.each do |association, options|
-          instance_variable_set("@#{association}", options[:class_name].constantize.new)
+          association_class = options[:class_name].constantize
+          instance_variable_set("@#{association}", association_class.new)
+          add_relationship association_class::TYPE, association_class::XML_PATH if options[:relationship]
         end
 
-        add_relationship Goldendocx::Documents::Styles::TYPE, Goldendocx::Documents::Styles::XML_PATH
-
-        @document = Goldendocx::Documents::Document.new
         @medias = []
         @media_amount = 0
       end

@@ -27,7 +27,7 @@ module Nokogiri
       end
 
       def attributes_hash
-        attribute_nodes.to_h { |node| [node.tag_name, node.value] }
+        attribute_nodes.reject { |node| node.tag_name == 'mc:Ignorable' }.to_h { |node| [node.tag_name, node.value] }
       end
     end
   end

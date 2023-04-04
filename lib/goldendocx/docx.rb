@@ -20,7 +20,7 @@ module Goldendocx
       Goldendocx::Parts::App::XML_PATH,
       Goldendocx::Parts::Core::XML_PATH,
 
-      Goldendocx::Documents::Body::XML_PATH,
+      Goldendocx::Documents::Document::XML_PATH,
       Goldendocx::Documents::Styles::XML_PATH
     ].freeze
 
@@ -35,12 +35,12 @@ module Goldendocx
         association_class = options[:class_name].constantize
         instance_variable_set("@#{association}", association_class.new)
 
-        add_relationship association_class::TYPE, association_class::XML_PATH
+        add_relationship association_class::TYPE, association_class::XML_PATH if options[:relationship]
         @content_types.add_override "/#{association_class::XML_PATH}", association_class::CONTENT_TYPE
       end
 
       @content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
-      @content_types.add_override "/#{Goldendocx::Documents::Body::XML_PATH}", Goldendocx::Parts::Documents::CONTENT_TYPE
+      @content_types.add_override "/#{Goldendocx::Documents::Document::XML_PATH}", Goldendocx::Documents::Document::CONTENT_TYPE
 
       @documents = Goldendocx::Parts::Documents.new
       @unstructured_entries = []
@@ -120,7 +120,6 @@ module Goldendocx
         zos.put_next_entry Goldendocx::Parts::ContentTypes::XML_PATH
         zos.write content_types.to_document_xml
 
-        zos.put_next_entry Goldendocx::Parts::Documents::XML_PATH
         documents.write_stream(zos)
 
         @unstructured_entries.each { |unstructured_entry| unstructured_entry.write_to(zos) }
