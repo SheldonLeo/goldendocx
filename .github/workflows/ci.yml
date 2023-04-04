@@ -22,7 +22,9 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
-      - name: Run tests (Including rubocop and rspec)
-        run: bundle exec rake
-      - name: Coveralls
-        uses: coverallsapp/github-action@v1
+      - name: Rubocop Lints
+        run: bundle exec rubocop -P
+      - name: Run tests with ox xml serializer
+        run: XML_SERIALIZER=ox bundle exec rspec
+      - name: Run tests with ox xml serializer
+        run: XML_SERIALIZER=nokogiri bundle exec rspec
