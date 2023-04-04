@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-#
-# FIXME: Temporarily here to provider syntactic sugar
+require 'ox'
+
 module Ox
   class Element
     def <<(node)
@@ -21,8 +21,11 @@ module Ox
       contents
     end
 
+    alias children nodes
+    alias tag_name name
+
     def unparsed_children
-      @unparsed_children ||= nodes.dup
+      @unparsed_children ||= children.dup
     end
 
     def attributes_hash

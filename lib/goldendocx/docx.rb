@@ -50,12 +50,7 @@ module Goldendocx
       docx_file = Zip::File.new(file_path)
 
       read_relationships(docx_file)
-
-      associations.each do |association, options|
-        association_class = options[:class_name].constantize
-        association_document = Goldendocx.xml_serializer.parse(docx_file.read(association_class::XML_PATH))
-        instance_variable_set("@#{association}", association_class.read_from(association_document))
-      end
+      read_associations(docx_file)
 
       @documents = Goldendocx::Parts::Documents.read_from(docx_file)
       @content_types = Goldendocx::Parts::ContentTypes.read_from(docx_file)

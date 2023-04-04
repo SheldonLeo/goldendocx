@@ -8,11 +8,11 @@ module Goldendocx
       end
 
       def component?
-        %w[w:p w:tbl].include?(@node.name)
+        %w[w:p w:tbl].include?(@node.tag_name)
       end
 
       def properties?
-        @node.name == 'w:sectPr'
+        @node.tag_name == 'w:sectPr'
       end
 
       def to_element(**_context)

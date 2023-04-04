@@ -28,7 +28,7 @@ SimpleCov.start do
 end
 
 require 'goldendocx'
-Goldendocx.configure { |config| config.xml_serializer = :nokogiri }
+# Goldendocx.configure { |config| config.xml_serializer = :nokogiri }
 
 Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 

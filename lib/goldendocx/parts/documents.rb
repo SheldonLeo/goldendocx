@@ -23,15 +23,8 @@ module Goldendocx
       class << self
         def read_from(docx_file)
           parts = Goldendocx::Parts::Documents.new
-
           parts.read_relationships(docx_file)
-
-          associations.each do |association, options|
-            association_class = options[:class_name].constantize
-            association_document = Goldendocx.xml_serializer.parse(docx_file.read(association_class::XML_PATH))
-            parts.instance_variable_set("@#{association}", association_class.read_from(association_document))
-          end
-
+          parts.read_associations(docx_file)
           parts.document.read_from(docx_file)
           parts.media_amount = docx_file.entries.count { |entry| entry.name.start_with?('word/media/') }
           parts
