@@ -24,5 +24,10 @@
     xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"
     xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"
     mc:Ignorable="w14 w15 w16se w16cid wp14">
-  <w:body/>
+  <w:body>
+    <w:sectPr>
+      <w:pgSz w:w="11906" w:h="16838"/>
+      <w:pgMar w:top="1440" w:bottom="1440" w:left="1800" w:right="1800" w:header="851" w:footer="992" w:gutter="0"/>
+    </w:sectPr>
+  </w:body>
 </w:document>
