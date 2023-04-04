@@ -29,6 +29,14 @@ module Goldendocx
       end
     end
 
+    def read_associations(docx_file)
+      associations.each do |association, options|
+        association_class = options[:class_name].constantize
+        association_document = Goldendocx.xml_serializer.parse(docx_file.read(association_class::XML_PATH))
+        instance_variable_set("@#{association}", association_class.read_from(association_document))
+      end
+    end
+
     def read_relationships(docx_file)
       @relationships = Goldendocx::Models::Relationships.read_from(Goldendocx.xml_serializer.parse(docx_file.read(relationships_xml_path)))
     end

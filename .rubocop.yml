@@ -6,9 +6,19 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 2.7
   SuggestExtensions: false
+  Exclude:
+    - 'tmp/**/*'
+    - 'demo/templates/xml_to_class.rb'
+
 
 Metrics/AbcSize:
   CountRepeatedAttributes: false
+
+Metrics/BlockLength:
+  Max: 50
+  CountAsOne:
+    - array
+    - hash
 
 Metrics/ClassLength:
   CountAsOne:

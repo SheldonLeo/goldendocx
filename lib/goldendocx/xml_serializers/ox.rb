@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'ox'
 require 'extensions/ox_extensions'
 
 module Goldendocx

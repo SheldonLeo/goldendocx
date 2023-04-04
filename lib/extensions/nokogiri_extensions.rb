@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'nokogiri'
+
 # FIXME: Temporarily here to provider syntactic sugar
 module Nokogiri
   module XML
@@ -16,15 +18,16 @@ module Nokogiri
         children.each(&:remove).map(&:content).map(&:to_s)
       end
 
+      def tag_name
+        [namespace&.prefix, name].compact.join(':')
+      end
+
       def unparsed_children
         @unparsed_children ||= children.dup
       end
 
       def attributes_hash
-        attribute_nodes.to_h do |node|
-          namespaced = [node.namespace&.prefix, node.node_name].compact.join(':')
-          [namespaced, node.value]
-        end
+        attribute_nodes.to_h { |node| [node.tag_name, node.value] }
       end
     end
   end

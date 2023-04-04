@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
 require 'extensions/nokogiri_extensions'
 
 module Goldendocx
@@ -16,18 +15,13 @@ module Goldendocx
         # TODO: To read nokogiri source codes and try to understand how it works
         def parse(xml, paths = [])
           document = ::Nokogiri::XML(xml)
-          missing_namespaces = document.errors.filter_map { |error| error.str1 if error.message.match?('Namespace.*not defined') }.uniq.compact
-          return search(document, paths) if missing_namespaces.blank?
 
-          new_document = ::Nokogiri::XML::Document.new.tap do |doc|
-            doc << ::Nokogiri::XML::Node.new('DummyRoot', doc).tap do |root|
-              missing_namespaces.each do |ns|
-                root.add_namespace ns, (Goldendocx::NAMESPACES[ns.to_sym] || "#{ns}:goldendocx")
-              end
-              root << document.root
-            end
-          end
-          search(new_document.at_xpath('DummyRoot'), paths)
+          missing_namespaces = document.errors.filter_map do |error|
+            error.str1 if error.message.match?('Namespace.*not defined')
+          end.uniq.compact
+          document = wrap_dummy_document(document, missing_namespaces) if missing_namespaces.present?
+
+          search(document, paths)
         end
 
         def search(node, paths)
@@ -64,6 +58,19 @@ module Goldendocx
           ::Nokogiri::XML::Node.new(tag.to_s, parent).tap do |element|
             yield(element) if block_given?
           end
+        end
+
+        private
+
+        def wrap_dummy_document(document, missing_namespaces)
+          ::Nokogiri::XML::Document.new.tap do |doc|
+            doc << ::Nokogiri::XML::Node.new('DummyRoot', doc).tap do |root|
+              missing_namespaces.each do |ns|
+                root.add_namespace ns, (Goldendocx::NAMESPACES[ns.to_sym] || "#{ns}:goldendocx")
+              end
+              root << document.root
+            end
+          end.at_xpath('DummyRoot')
         end
       end
     end
