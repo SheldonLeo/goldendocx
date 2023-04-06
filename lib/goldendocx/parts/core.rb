@@ -22,8 +22,8 @@ module Goldendocx
       embeds_one :updated_at, class_name: 'Goldendocx::Parts::Properties::UpdatedAtProperty'
 
       class << self
-        def read_from(xml_node, multiple: nil)
-          core = super(xml_node, multiple: multiple)
+        def read_from(xml_node)
+          core = super(xml_node)
           revision = (core.revision || core.build_revision)
           revision.value = revision.value.to_i + 1
           core.build_updater(name: "Goldendocx_#{Goldendocx::VERSION}")

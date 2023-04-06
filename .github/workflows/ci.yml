@@ -25,6 +25,6 @@ jobs:
       - name: Rubocop Lints
         run: bundle exec rubocop -P
       - name: Run tests with ox xml serializer
-        run: XML_SERIALIZER=ox bundle exec rspec
-      - name: Run tests with ox xml serializer
-        run: XML_SERIALIZER=nokogiri bundle exec rspec
+        run: bundle exec rake ox_compatible_spec
+      - name: Run tests with nokogiri xml serializer
+        run: bundle exec rake nokogiri_compatible_spec

@@ -78,6 +78,7 @@ module Goldendocx
         location = caller.find { |c| c.include?('goldendocx/') && !c.include?('goldendocx/element.rb') }
         warn "warning: [#{method}] `#{name}` better be `#{suggestion_name}` at #{location}"
       end
+
       # :nocov:
     end
 
@@ -85,11 +86,21 @@ module Goldendocx
       self.class.children.keys.flat_map { |name| send(name) }.compact
     end
 
-    def read_children(node)
-      self.class.children.each do |name, options|
-        child_class = options[:class_name].constantize
-        children = child_class.read_from(node, multiple: options[:multiple])
-        instance_variable_set("@#{name}", children)
+    def read_children(xml_node)
+      xml_node.children.each do |child_node|
+        read_child(child_node)
+      end
+    end
+
+    def read_child(child_node)
+      name, options = self.class.children.find do |_, opts|
+        opts[:class_name].constantize.adapt?(child_node)
+      end
+      if name.present?
+        child = options[:class_name].constantize.read_from(child_node)
+        options[:multiple] ? send(name) << child : send("#{name}=", child)
+      else
+        unparsed_children << child_node
       end
     end
   end

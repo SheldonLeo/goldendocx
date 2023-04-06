@@ -42,7 +42,7 @@ describe Goldendocx::Element do
     end
   end
 
-  describe '.read_from' do
+  describe '.parse' do
     context 'with attributes' do
       let!(:element_class) do
         Class.new do
@@ -61,9 +61,8 @@ describe Goldendocx::Element do
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
           <hello:world java:version="jdk11" ruby:rails="7.0"/>
         XML
-        node = Goldendocx.xml_serializer.parse(xml)
 
-        element = element_class.read_from(node)
+        element = element_class.parse(xml)
         expect(element.spring).to eq('jdk11')
         expect(element.rails).to eq('7.0')
       end
@@ -117,9 +116,8 @@ describe Goldendocx::Element do
             <D:Daughter lovely:name="Pinkie">Best</D:Daughter>
           </F:Father>
         XML
-        node = Goldendocx.xml_serializer.parse(xml)
 
-        father = father_class.read_from(node)
+        father = father_class.parse(xml)
         expect(father.son).to be_present
         expect(father.son.name).to eq('Don')
         expect(father.son.status).to eq('Good')

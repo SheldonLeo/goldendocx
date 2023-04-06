@@ -1,18 +1,26 @@
 # frozen_string_literal: true
 
 class String
-  def self.read_from(node, multiple: false)
-    values = node.extract_contents
+  class << self
+    def adapt?(xml_node)
+      xml_node.is_a?(String) || xml_node.adapt?(String)
+    end
 
-    multiple ? Array(values) : values.first
+    def read_from(xml_node)
+      xml_node.to_s
+    end
   end
 end
 
 class Time
-  def self.read_from(node, multiple: false)
-    values = node.extract_contents.map(&:to_time)
+  class << self
+    def adapt?(xml_node)
+      xml_node.is_a?(String) || xml_node.adapt?(Time)
+    end
 
-    multiple ? Array(values) : values.first
+    def read_from(xml_node)
+      xml_node.to_s.to_time
+    end
   end
 
   def to_element(**_context)
@@ -21,10 +29,14 @@ class Time
 end
 
 class Integer
-  def self.read_from(node, multiple: false)
-    values = node.extract_contents.map(&:to_i)
+  class << self
+    def adapt?(xml_node)
+      xml_node.is_a?(String) || xml_node.adapt?(Integer)
+    end
 
-    multiple ? Array(values) : values.first
+    def read_from(xml_node)
+      xml_node.to_s.to_i
+    end
   end
 
   def to_element(**_context)

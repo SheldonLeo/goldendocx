@@ -3,6 +3,14 @@
 require 'extensions/nokogiri_extensions'
 
 context 'with Nokogiri Extensions' do
+  context 'when Nokogiri::XML::Document' do
+    let(:document) { Nokogiri::XML('<Hello><World/></Hello>') }
+
+    it 'returns root tag name as tag name' do
+      expect(document.tag_name).to eq('Hello')
+    end
+  end
+
   context 'when Nokogiri::XML::Node' do
     let(:root) { Nokogiri::XML('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>') }
     let(:element) { Nokogiri::XML::Node.new('Element', root) }
@@ -11,9 +19,10 @@ context 'with Nokogiri Extensions' do
       expect { element << 1 }.not_to raise_error
     end
 
-    it 'extracts contents from children nodes' do
-      element << 'Hello' << 'World'
-      expect(element.extract_contents).to eq(['HelloWorld'])
+    it 'adapts children nodes' do
+      element << 'Hello'
+      expect(element.children.first).to be_adapt(String)
+      expect(element.children.first).not_to be_adapt(Struct)
     end
 
     it 'maintains unparsed children' do

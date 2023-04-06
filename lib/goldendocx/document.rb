@@ -3,20 +3,19 @@
 # Just to mark a element as a root document node
 module Goldendocx
   module Document
-    def self.included(base)
-      base.extend(ClassMethods)
-      base.include(Goldendocx::Element)
+    extend ActiveSupport::Concern
+    include Goldendocx::Element
+
+    included do
+      class_attribute :concerned_namespaces, default: []
+      class_attribute :ignorable_namespaces, default: []
     end
 
-    module ClassMethods
+    class_methods do
       def concern_namespaces(*namespaces)
         namespaces.each do |namespace|
           concerned_namespaces << namespace unless concerned_namespaces.include?(namespace)
         end
-      end
-
-      def concerned_namespaces
-        @concerned_namespaces ||= []
       end
 
       def ignore_namespaces(*namespaces)
@@ -24,22 +23,10 @@ module Goldendocx
           ignorable_namespaces << namespace.to_sym unless ignorable_namespaces.include?(namespace)
         end
       end
-
-      def ignorable_namespaces
-        @ignorable_namespaces ||= []
-      end
-    end
-
-    def concerned_namespaces
-      self.class.concerning_ancestors.flat_map(&:concerned_namespaces)
-    end
-
-    def ignorable_namespaces
-      self.class.concerning_ancestors.flat_map(&:ignorable_namespaces)
     end
 
     def to_document_xml(&block)
-      Goldendocx.xml_serializer.build_document_xml(root_tag, concerned_namespaces, ignorable_namespaces) { |xml| build_element(xml, &block) }
+      Goldendocx.xml_serializer.build_document_xml(tag_name, concerned_namespaces, ignorable_namespaces) { |xml| build_element(xml, &block) }
     end
   end
 end

@@ -38,13 +38,15 @@ module Goldendocx
       end
 
       def read_defaults(docx_file)
-        @defaults = Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH), %w[Types Default]).map do |node|
+        document = Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH))
+        @defaults = Goldendocx.xml_serializer.search(document, %w[Types Default]).map do |node|
           Goldendocx::ContentTypes::Default.new(node[:Extension], node[:ContentType])
         end
       end
 
       def read_overrides(docx_file)
-        @overrides = Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH), %w[Types Override]).map do |node|
+        document = Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH))
+        @overrides = Goldendocx.xml_serializer.search(document, %w[Types Override]).map do |node|
           Goldendocx::ContentTypes::Override.new(node[:PartName], node[:ContentType])
         end
       end

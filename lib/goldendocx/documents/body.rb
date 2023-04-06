@@ -21,11 +21,12 @@ module Goldendocx
       embeds_one :section_property, class_name: 'Goldendocx::Documents::Properties::SectionProperty', auto_build: true
 
       class << self
-        def read_from(xml_node, multiple: nil)
-          document = super(xml_node, multiple: multiple)
+        def read_from(xml_node)
+          document = super(xml_node)
 
-          Goldendocx.xml_serializer.search(xml_node, %w[w:body *]).map do |node|
-            document.components << node if %w[w:p w:tbl].include?(node.tag_name)
+          component_tags = %w[w:p w:tbl]
+          xml_node.children.map do |node|
+            document.components << node if component_tags.include?(node.tag_name)
           end
 
           document
@@ -39,7 +40,7 @@ module Goldendocx
 
       # FIXME: Override for children not in correctly order
       def to_element(**_context)
-        Goldendocx.xml_serializer.build_element(root_tag) do |xml|
+        Goldendocx.xml_serializer.build_element(tag_name) do |xml|
           components.each { |component| xml << component }
           xml << section_property if section_property
 

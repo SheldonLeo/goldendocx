@@ -15,9 +15,9 @@ describe Goldendocx::XmlSerializers::Nokogiri, :xml_serializer do
           </w:rPr>
         </w:rPrDefault>
       XML
-
-      expect(described_class.parse(fragment, %w[w:rPrDefault w:rPr]).size).to eq(1)
-      expect(described_class.parse(fragment, %w[w:rPrDefault w:rPr w:lang]).size).to eq(1)
+      document = described_class.parse(fragment)
+      expect(described_class.search(document, %w[w:rPrDefault w:rPr]).size).to eq(1)
+      expect(described_class.search(document, %w[w:rPrDefault w:rPr w:lang]).size).to eq(1)
     end
 
     specify 'process with none namespaces if parse a fragment' do
@@ -29,8 +29,9 @@ describe Goldendocx::XmlSerializers::Nokogiri, :xml_serializer do
         </Types>
       XML
 
-      expect(described_class.parse(fragment, %w[Types]).size).to eq(1)
-      expect(described_class.parse(fragment, %w[Types Default]).size).to eq(3)
+      document = described_class.parse(fragment)
+      expect(described_class.search(document, %w[Types]).size).to eq(1)
+      expect(described_class.search(document, %w[Types Default]).size).to eq(3)
     end
   end
 end
