@@ -15,7 +15,8 @@ RSpec.shared_context 'with xml serializer' do
     end
 
     it 'parses xml elements at specific paths' do
-      elements = described_class.parse(xml, %w[Types Default])
+      document = described_class.parse(xml)
+      elements = described_class.search(document, %w[Types Default])
       expect(elements.size).to eq(1)
       expect(elements.first[:Extension]).to eq('xml')
     end

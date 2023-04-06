@@ -40,7 +40,7 @@ module Goldendocx
       end
 
       def add_style(fragment)
-        style = Goldendocx::Documents::Style.read_from(Goldendocx.xml_serializer.parse(fragment))
+        style = Goldendocx::Documents::Style.parse(fragment)
         style.id = (styles.size + 1).to_s # Rearrange id to prevent duplicates
         styles << style
         style.id

@@ -3,7 +3,7 @@
 describe Goldendocx::Documents::Document do
   let(:document) { described_class.new }
   let(:docx_file) { Zip::File.new('spec/fixtures/BlankDocxTemplate.docx') }
-  let(:document_xml) { Goldendocx.xml_serializer.parse(docx_file.read(described_class::XML_PATH)) }
+  let(:document_xml) { docx_file.read(described_class::XML_PATH) }
 
   describe '#to_document_xml' do
     let(:xml) { document.to_document_xml }
@@ -15,7 +15,7 @@ describe Goldendocx::Documents::Document do
   end
 
   it 'reads document.xml from docx file' do
-    document = described_class.read_from(document_xml)
+    document = described_class.parse(document_xml)
 
     body = document.body
     expect(body.components.size).to eq(1)

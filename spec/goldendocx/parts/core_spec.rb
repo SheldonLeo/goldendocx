@@ -3,7 +3,7 @@
 describe Goldendocx::Parts::Core do
   let(:core) { described_class.new }
   let(:docx_file) { Zip::File.new('spec/fixtures/BlankDocxTemplate.docx') }
-  let(:core_xml) { Goldendocx.xml_serializer.parse(docx_file.read(described_class::XML_PATH)) }
+  let(:core_xml) { docx_file.read(described_class::XML_PATH) }
 
   before do
     Timecop.freeze(Time.local(2023, 11, 15))
@@ -30,7 +30,7 @@ describe Goldendocx::Parts::Core do
     end
 
     specify 'resets modification information for original core.xml' do
-      core = described_class.read_from(core_xml)
+      core = described_class.parse(core_xml)
       xml = core.to_document_xml
       expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

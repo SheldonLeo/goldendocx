@@ -5,6 +5,12 @@ require 'nokogiri'
 # FIXME: Temporarily here to provider syntactic sugar
 module Nokogiri
   module XML
+    class Document
+      def tag_name
+        root.tag_name
+      end
+    end
+
     class Node
       def <<(node_or_tags)
         # FIXME: Add this line to transform element implicitly
@@ -14,8 +20,9 @@ module Nokogiri
         self
       end
 
-      def extract_contents
-        children.each(&:remove).map(&:content).map(&:to_s)
+      def adapt?(klass)
+        adaptable_classes = [String, Integer, Time]
+        is_a?(Nokogiri::XML::Text) && adaptable_classes.include?(klass)
       end
 
       def tag_name

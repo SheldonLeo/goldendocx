@@ -3,16 +3,21 @@
 require 'extensions/ox_extensions'
 
 context 'with Ox Extensions' do
+  context 'when Ox::Document' do
+    let(:document) { Ox::Document.new }
+
+    it 'returns first child as document root' do
+      root_element = Ox::Element.new('Root')
+      document << root_element
+      expect(document.root).to eq(root_element)
+    end
+  end
+
   context 'when Ox::Element' do
     let(:element) { Ox::Element.new('Element') }
 
     it 'overrides `<<` method to transfer element implicitly' do
       expect { element << 1 }.not_to raise_error
-    end
-
-    it 'extracts contents from children nodes' do
-      element << 'Hello' << 'World'
-      expect(element.extract_contents).to eq(%w[Hello World])
     end
 
     it 'maintains unparsed children' do

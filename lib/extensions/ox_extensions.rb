@@ -3,6 +3,12 @@
 require 'ox'
 
 module Ox
+  class Document
+    def root
+      children.first
+    end
+  end
+
   class Element
     def <<(node)
       # FIXME: Add this line to transform element implicitly
@@ -13,12 +19,6 @@ module Ox
       @nodes = [] if !instance_variable_defined?(:@nodes) || @nodes.nil?
       @nodes << node
       self
-    end
-
-    def extract_contents
-      contents = nodes.map(&:to_s)
-      remove_children(*nodes)
-      contents
     end
 
     alias children nodes

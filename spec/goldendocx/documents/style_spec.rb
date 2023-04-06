@@ -20,10 +20,9 @@ describe Goldendocx::Documents::Style do
         </w:style>
       XML
     end
-    let!(:style_xml) { Goldendocx.xml_serializer.parse(style_fragment) }
 
     it 'reads styles from xml fragment' do
-      style = described_class.read_from(style_xml)
+      style = described_class.parse(style_fragment)
       expect(style.unparsed_attributes).to eq('w:default' => '1')
       expect(style.unparsed_children.size).to eq(4)
     end

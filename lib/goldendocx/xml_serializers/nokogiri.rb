@@ -13,15 +13,15 @@ module Goldendocx
 
         # TODO: Nokogiri namespace is soooo strict....
         # TODO: To read nokogiri source codes and try to understand how it works
-        def parse(xml, paths = [])
+        def parse(xml)
           document = ::Nokogiri::XML(xml)
 
           missing_namespaces = document.errors.filter_map do |error|
             error.str1 if error.message.match?('Namespace.*not defined')
           end.uniq.compact
-          document = wrap_dummy_document(document, missing_namespaces) if missing_namespaces.present?
+          return document if missing_namespaces.blank?
 
-          search(document, paths)
+          wrap_document(document, missing_namespaces)
         end
 
         def search(node, paths)
@@ -62,15 +62,11 @@ module Goldendocx
 
         private
 
-        def wrap_dummy_document(document, missing_namespaces)
-          ::Nokogiri::XML::Document.new.tap do |doc|
-            doc << ::Nokogiri::XML::Node.new('DummyRoot', doc).tap do |root|
-              missing_namespaces.each do |ns|
-                root.add_namespace ns, (Goldendocx::NAMESPACES[ns.to_sym] || "#{ns}:goldendocx")
-              end
-              root << document.root
-            end
-          end.at_xpath('DummyRoot')
+        def wrap_document(document, missing_namespaces)
+          missing_namespaces.each do |ns|
+            document.root.add_namespace ns, (Goldendocx::NAMESPACES[ns.to_sym] || "#{ns}:goldendocx")
+          end
+          ::Nokogiri::XML(document.to_xml(indent: 0).delete("\n"))
         end
       end
     end
