@@ -35,9 +35,12 @@ end
 
 ### Compose MS Word
 
-- Read MS Word file and write to another path
+- Create new MS Word file or read exists file and write to another path
     ```ruby
+      docx = Goldendocx::Docx.new
       docx = Goldendocx::Docx.new(docx_file_path)
+      docx.read_from(docx_file_path)
+  
       docx.write_to(new_file_path)
     ```
 - Create texts to MS Word
