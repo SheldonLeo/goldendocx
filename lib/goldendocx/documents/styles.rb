@@ -22,8 +22,8 @@ module Goldendocx
         styles.size
       end
 
-      def write_to(zos, xml_path = XML_PATH)
-        zos.put_next_entry xml_path
+      def write_to(zos)
+        zos.put_next_entry XML_PATH
         zos.write to_document_xml
       end
 

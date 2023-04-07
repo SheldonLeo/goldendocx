@@ -74,7 +74,7 @@ describe Goldendocx::Parts::Documents do
             'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
             'word/media/image1.png'
           )
-          expect(relationship_id).to eq('rId2')
+          expect(relationship_id).to eq('rId3')
         end.to change { documents.relationships.size }.by(1)
       end
     end
@@ -90,7 +90,7 @@ describe Goldendocx::Parts::Documents do
       it 'composes relationship documents xml' do
         xml = documents.relationships.to_document_xml
         image_relationship = <<~REL.strip
-          <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="word/media/image1.png"/>
+          <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="word/media/image1.png"/>
         REL
         expect(xml).to include(image_relationship)
       end
