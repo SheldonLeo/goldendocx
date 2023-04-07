@@ -30,7 +30,7 @@ end
 require 'goldendocx'
 Goldendocx.configure { |config| config.xml_serializer = ENV.fetch('XML_SERIALIZER', :ox).to_sym }
 
-Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
+Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
 

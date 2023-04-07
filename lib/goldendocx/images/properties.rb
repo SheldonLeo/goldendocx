@@ -7,6 +7,6 @@ module Goldendocx
   end
 end
 
-Dir.glob(File.join(File.dirname(__FILE__), 'properties', '*.rb').to_s).sort.each do |file|
+Dir.glob(File.join(File.dirname(__FILE__), 'properties', '*.rb').to_s).each do |file|
   require file
 end

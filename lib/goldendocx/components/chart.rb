@@ -18,7 +18,7 @@ module Goldendocx
       attr_accessor :name
       attr_reader :id, :series
 
-      def initialize(chart_id, relationship_id, **attributes)
+      def initialize(chart_id, relationship_id, attributes = {})
         @id = chart_id
         @series = []
 

@@ -7,7 +7,7 @@ module Goldendocx
       BASE64_PNG_PATTERN = %r{
         ^data:image/png;base64,
         (?<data>(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$
-      }x.freeze
+      }x
 
       def initialize(name, data)
         @name = name

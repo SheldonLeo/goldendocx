@@ -14,6 +14,6 @@ require 'goldendocx/tables/properties'
 require 'goldendocx/tables/row'
 require 'goldendocx/tables/cell'
 
-Dir.glob(File.join(File.dirname(__FILE__), 'tables', '*.rb').to_s).sort.each do |file|
+Dir.glob(File.join(File.dirname(__FILE__), 'tables', '*.rb').to_s).each do |file|
   require file
 end
