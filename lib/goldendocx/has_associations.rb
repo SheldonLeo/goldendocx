@@ -38,7 +38,7 @@ module Goldendocx
     end
 
     def read_relationships(docx_file)
-      @relationships = Goldendocx::Models::Relationships.read_from(Goldendocx.xml_serializer.parse(docx_file.read(relationships_xml_path)))
+      @relationships = Goldendocx::Models::Relationships.parse(docx_file.read(relationships_xml_path))
     end
 
     def write_relationships(zos)
