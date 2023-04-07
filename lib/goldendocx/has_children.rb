@@ -14,34 +14,34 @@ module Goldendocx
       end
     end
 
-    class_methods do
+    module ClassMethods
       def embeds_one(name, class_name:, auto_build: false)
         warning_naming_suggestion(__method__, name, name.to_s.singularize)
 
-        self.children = children.merge(name => { class_name: class_name, multiple: false, auto_build: auto_build })
+        options = { class_name: class_name, multiple: false, auto_build: auto_build }
+        self.children = children.merge(name => options)
+
         create_children_getter(name)
         create_children_setter(name)
         create_children_builder(name)
       end
 
-      def embeds_many(name, class_name:)
+      def embeds_many(name, class_name:, uniqueness: false)
         warning_naming_suggestion(__method__, name, name.to_s.pluralize)
 
-        self.children = children.merge(name => { class_name: class_name, multiple: true, auto_build: false })
+        options = { class_name: class_name, multiple: true, uniqueness: uniqueness }
+        self.children = children.merge(name => options)
+
         create_children_getter(name)
+        create_children_setter(name)
         create_children_builder(name)
       end
 
       def default_value(name)
         options = children[name]
-
         return [] if options[:multiple]
 
         options[:class_name].constantize.new if options[:auto_build]
-      end
-
-      def concerning_ancestors
-        ancestors.filter { |ancestor| ancestor.include?(Goldendocx::Element) }
       end
 
       private
@@ -58,16 +58,26 @@ module Goldendocx
         define_method("#{name}=") { |value| instance_variable_set("@#{name}", value) }
       end
 
+      def create_children_appender(name)
+        options = children[name]
+
+        define_method "append_#{name.to_s.singularize}" do |child|
+          return instance_variable_set("@#{name}", child) unless options[:multiple]
+
+          children = send(name)
+          children << child unless options[:uniqueness] && children.any?(child)
+          child
+        end
+      end
+
       def create_children_builder(name)
         options = children[name]
-        class_name = options[:class_name]
-        multiple = options[:multiple]
+        create_children_appender(name)
 
         define_method "build_#{name.to_s.singularize}" do |**attributes|
-          child = class_name.constantize.new
+          child = options[:class_name].constantize.new
           attributes.each { |key, value| child.send("#{key}=", value) if child.respond_to?("#{key}=") }
-          multiple ? send(name) << child : instance_variable_set("@#{name}", child)
-          child
+          send("append_#{name.to_s.singularize}", child)
         end
       end
 
@@ -78,7 +88,6 @@ module Goldendocx
         location = caller.find { |c| c.include?('goldendocx/') && !c.include?('goldendocx/element.rb') }
         warn "warning: [#{method}] `#{name}` better be `#{suggestion_name}` at #{location}"
       end
-
       # :nocov:
     end
 
@@ -98,7 +107,7 @@ module Goldendocx
       end
       if name.present?
         child = options[:class_name].constantize.read_from(child_node)
-        options[:multiple] ? send(name) << child : send("#{name}=", child)
+        send("append_#{name.to_s.singularize}", child)
       else
         unparsed_children << child_node
       end

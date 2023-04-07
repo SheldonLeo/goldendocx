@@ -14,12 +14,6 @@ AllCops:
 Metrics/AbcSize:
   CountRepeatedAttributes: false
 
-Metrics/BlockLength:
-  Max: 50
-  CountAsOne:
-    - array
-    - hash
-
 Metrics/ClassLength:
   CountAsOne:
     - array

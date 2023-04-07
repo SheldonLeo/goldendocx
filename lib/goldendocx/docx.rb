@@ -9,7 +9,7 @@ module Goldendocx
   class Docx
     include Goldendocx::HasAssociations
 
-    attr_reader :unstructured_entries, :documents, :content_types
+    attr_reader :unstructured_entries, :documents
 
     RELATIONSHIPS_XML_PATH = '_rels/.rels'
 
@@ -27,20 +27,19 @@ module Goldendocx
     relationships_at RELATIONSHIPS_XML_PATH
     associate :app, class_name: 'Goldendocx::Parts::App'
     associate :core, class_name: 'Goldendocx::Parts::Core'
+    associate :content_types, class_name: 'Goldendocx::Parts::ContentTypes', isolate: true
 
     def initialize
-      @content_types = Goldendocx::Parts::ContentTypes.new
-
       associations.each do |association, options|
         association_class = options[:class_name].constantize
         instance_variable_set("@#{association}", association_class.new)
-
-        add_relationship association_class::TYPE, association_class::XML_PATH if options[:relationship]
-        @content_types.add_override "/#{association_class::XML_PATH}", association_class::CONTENT_TYPE
+        add_relationship association_class::TYPE, association_class::XML_PATH unless options[:isolate]
       end
 
-      @content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
-      @content_types.add_override "/#{Goldendocx::Documents::Document::XML_PATH}", Goldendocx::Documents::Document::CONTENT_TYPE
+      content_types.add_override "/#{Goldendocx::Parts::App::XML_PATH}", Goldendocx::Parts::App::CONTENT_TYPE
+      content_types.add_override "/#{Goldendocx::Parts::Core::XML_PATH}", Goldendocx::Parts::Core::CONTENT_TYPE
+      content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
+      content_types.add_override "/#{Goldendocx::Documents::Document::XML_PATH}", Goldendocx::Documents::Document::CONTENT_TYPE
 
       @documents = Goldendocx::Parts::Documents.new
       @unstructured_entries = []
@@ -53,7 +52,7 @@ module Goldendocx
       read_associations(docx_file)
 
       @documents = Goldendocx::Parts::Documents.read_from(docx_file)
-      @content_types = Goldendocx::Parts::ContentTypes.read_from(docx_file)
+
       @unstructured_entries = docx_file.entries.filter_map do |entry|
         UnStructuredEntry.new(entry) unless STRUCTURED_ENTRIES.include?(entry.name)
       end
@@ -116,9 +115,6 @@ module Goldendocx
         associations.each_key do |association|
           send(association).write_to(zos)
         end
-
-        zos.put_next_entry Goldendocx::Parts::ContentTypes::XML_PATH
-        zos.write content_types.to_document_xml
 
         documents.write_stream(zos)
 

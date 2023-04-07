@@ -14,58 +14,35 @@ module Goldendocx
       REQUIRED_DEFAULTS = {
         rels: 'application/vnd.openxmlformats-package.relationships+xml',
         xml: 'application/xml'
-      }.freeze
-
-      attr_reader :defaults, :overrides
+      }.with_indifferent_access.freeze
 
       tag :Types
       attribute :xmlns, default: NAMESPACE, readonly: true
 
-      class << self
-        def read_from(docx_file)
-          content_types = Goldendocx::Parts::ContentTypes.new
-          content_types.read_defaults(docx_file)
-          content_types.read_overrides(docx_file)
-          content_types
-        end
-      end
+      embeds_many :defaults, class_name: 'Goldendocx::ContentTypes::Default', uniqueness: true
+      embeds_many :overrides, class_name: 'Goldendocx::ContentTypes::Override', uniqueness: true
 
       def initialize
-        @defaults = REQUIRED_DEFAULTS.map do |extension, content_type|
-          Goldendocx::ContentTypes::Default.new(extension, content_type)
-        end
-        @overrides = []
-      end
-
-      def read_defaults(docx_file)
-        document = Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH))
-        @defaults = Goldendocx.xml_serializer.search(document, %w[Types Default]).map do |node|
-          Goldendocx::ContentTypes::Default.new(node[:Extension], node[:ContentType])
+        REQUIRED_DEFAULTS.map do |extension, content_type|
+          build_defaults(extension: extension, content_type: content_type)
         end
       end
 
-      def read_overrides(docx_file)
-        document = Goldendocx.xml_serializer.parse(docx_file.read(XML_PATH))
-        @overrides = Goldendocx.xml_serializer.search(document, %w[Types Override]).map do |node|
-          Goldendocx::ContentTypes::Override.new(node[:PartName], node[:ContentType])
-        end
+      def write_to(zos)
+        zos.put_next_entry XML_PATH
+        zos.write to_document_xml
       end
 
       def add_default(extension, content_type)
-        new_default = Goldendocx::ContentTypes::Default.new(extension, content_type)
-        defaults << new_default if defaults.none?(new_default)
+        return if defaults.any? { |default| extension == default.extension && content_type == default.content_type }
+
+        build_defaults(extension: extension, content_type: content_type)
       end
 
       def add_override(part_name, content_type)
-        new_override = Goldendocx::ContentTypes::Override.new(part_name, content_type)
-        overrides << new_override if overrides.none?(new_override)
-      end
+        return if overrides.any? { |override| part_name == override.part_name && content_type == override.content_type }
 
-      def to_document_xml
-        super do |xml|
-          defaults.each { |default| xml << default }
-          overrides.each { |override| xml << override }
-        end
+        build_override(part_name: part_name, content_type: content_type)
       end
     end
   end

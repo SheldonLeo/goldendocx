@@ -9,7 +9,7 @@ module Goldendocx
     include Goldendocx::HasAttributes
     include Goldendocx::HasChildren
 
-    class_methods do
+    module ClassMethods
       def tag(*args)
         @tag = args.first if args.any?
         @tag
@@ -41,6 +41,15 @@ module Goldendocx
         instance.read_children(xml_node)
         instance
       end
+
+      def concerning_ancestors
+        ancestors.filter { |ancestor| ancestor.include?(Goldendocx::Element) }
+      end
+    end
+
+    def initialize(attributes = nil)
+      attributes ||= {}
+      assign_attributes(**attributes)
     end
 
     def tag
