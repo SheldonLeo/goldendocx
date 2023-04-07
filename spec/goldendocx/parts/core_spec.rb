@@ -22,7 +22,7 @@ describe Goldendocx::Parts::Core do
           xmlns:dcterms="http://purl.org/dc/terms/"#{' '}
           xmlns:dcmitype="http://purl.org/dc/dcmitype/"#{' '}
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <dc:creator>Goldendocx_0.2.2</dc:creator>
+          <dc:creator>Goldendocx_0.2.3</dc:creator>
           <dcterms:created xsi:type="dcterms:W3CDTF">2023-11-15T00:00:00Z</dcterms:created>
         </cp:coreProperties>
       XML
@@ -42,7 +42,7 @@ describe Goldendocx::Parts::Core do
           <dc:creator>Epicurus</dc:creator>
           <dcterms:created xsi:type="dcterms:W3CDTF">2023-02-17T07:29:00Z</dcterms:created>
           <cp:revision>2</cp:revision>
-          <cp:lastModifiedBy>Goldendocx_0.2.2</cp:lastModifiedBy>
+          <cp:lastModifiedBy>Goldendocx_0.2.3</cp:lastModifiedBy>
           <dcterms:modified xsi:type="dcterms:W3CDTF">2023-11-15T00:00:00Z</dcterms:modified>
         </cp:coreProperties>
       XML
