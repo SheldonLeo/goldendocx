@@ -20,7 +20,10 @@ module Goldendocx
       Goldendocx::Parts::App::XML_PATH,
       Goldendocx::Parts::Core::XML_PATH,
 
+      Goldendocx::Parts::Documents::RELATIONSHIPS_XML_PATH,
+
       Goldendocx::Documents::Document::XML_PATH,
+      Goldendocx::Documents::Settings::XML_PATH,
       Goldendocx::Documents::Styles::XML_PATH
     ].freeze
 
@@ -29,20 +32,8 @@ module Goldendocx
     associate :core, class_name: 'Goldendocx::Parts::Core'
     associate :content_types, class_name: 'Goldendocx::Parts::ContentTypes', isolate: true
 
-    def initialize
-      associations.each do |association, options|
-        association_class = options[:class_name].constantize
-        instance_variable_set("@#{association}", association_class.new)
-        add_relationship association_class::TYPE, association_class::XML_PATH unless options[:isolate]
-      end
-
-      content_types.add_override "/#{Goldendocx::Parts::App::XML_PATH}", Goldendocx::Parts::App::CONTENT_TYPE
-      content_types.add_override "/#{Goldendocx::Parts::Core::XML_PATH}", Goldendocx::Parts::Core::CONTENT_TYPE
-      content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
-      content_types.add_override "/#{Goldendocx::Documents::Document::XML_PATH}", Goldendocx::Documents::Document::CONTENT_TYPE
-
-      @documents = Goldendocx::Parts::Documents.new
-      @unstructured_entries = []
+    def initialize(file_path = nil)
+      file_path.present? ? read_from(file_path) : build_default
     end
 
     def read_from(file_path)
@@ -95,6 +86,25 @@ module Goldendocx
     end
 
     private
+
+    def build_default
+      associations.each do |association, options|
+        association_class = options[:class_name].constantize
+        instance_variable_set("@#{association}", association_class.new)
+        add_relationship association_class::TYPE, association_class::XML_PATH unless options[:isolate]
+      end
+
+      content_types.add_override "/#{Goldendocx::Parts::App::XML_PATH}", Goldendocx::Parts::App::CONTENT_TYPE
+      content_types.add_override "/#{Goldendocx::Parts::Core::XML_PATH}", Goldendocx::Parts::Core::CONTENT_TYPE
+      content_types.add_override "/#{Goldendocx::Documents::Styles::XML_PATH}", Goldendocx::Documents::Styles::CONTENT_TYPE
+      content_types.add_override "/#{Goldendocx::Documents::Settings::XML_PATH}", Goldendocx::Documents::Settings::CONTENT_TYPE
+
+      @documents = Goldendocx::Parts::Documents.new
+      add_relationship Goldendocx::Documents::Document::TYPE, Goldendocx::Documents::Document::XML_PATH
+      content_types.add_override "/#{Goldendocx::Documents::Document::XML_PATH}", Goldendocx::Documents::Document::CONTENT_TYPE
+
+      @unstructured_entries = []
+    end
 
     def ensure_image_content_type!(_image_data)
       extension = 'png'

@@ -6,6 +6,7 @@ module Goldendocx
     class Documents
       include Goldendocx::HasAssociations
 
+      XML_PATH = 'word/'
       RELATIONSHIPS_XML_PATH = 'word/_rels/document.xml.rels'
 
       attr_reader :document, # document.xml
@@ -16,6 +17,7 @@ module Goldendocx
 
       relationships_at RELATIONSHIPS_XML_PATH
       associate :styles, class_name: 'Goldendocx::Documents::Styles'
+      associate :settings, class_name: 'Goldendocx::Documents::Settings'
       associate :document, class_name: 'Goldendocx::Documents::Document', isolate: true
 
       class << self
@@ -32,7 +34,7 @@ module Goldendocx
         associations.each do |association, options|
           association_class = options[:class_name].constantize
           instance_variable_set("@#{association}", association_class.new)
-          add_relationship association_class::TYPE, association_class::XML_PATH unless options[:isolate]
+          add_relationship association_class::TYPE, association_class::XML_PATH.gsub(XML_PATH, '') unless options[:isolate]
         end
 
         @medias = []

@@ -18,7 +18,7 @@ module Goldendocx
       def add_cell(data)
         cell = case data
                when Goldendocx::Tables::Cell then data
-               when Hash then Goldendocx::Tables::Cell.new(data)
+               when Hash then Goldendocx::Tables::Cell.new(**data)
                else Goldendocx::Tables::Cell.new(content: data.to_s)
                end
         cells << cell
