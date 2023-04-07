@@ -11,6 +11,6 @@ end
 require 'goldendocx/components/properties'
 require 'goldendocx/components/chart'
 
-Dir.glob(File.join(File.dirname(__FILE__), 'components', '*.rb').to_s).sort.each do |file|
+Dir.glob(File.join(File.dirname(__FILE__), 'components', '*.rb').to_s).each do |file|
   require file
 end

@@ -21,6 +21,6 @@ end
 
 require 'goldendocx/charts/properties'
 
-Dir.glob(File.join(File.dirname(__FILE__), 'charts', '*.rb').to_s).sort.each do |file|
+Dir.glob(File.join(File.dirname(__FILE__), 'charts', '*.rb').to_s).each do |file|
   require file
 end
