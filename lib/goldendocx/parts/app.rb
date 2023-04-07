@@ -17,8 +17,7 @@ module Goldendocx
         def read_from(app_document)
           new_instance = new
 
-          paths = %w[Properties *]
-          Goldendocx.xml_serializer.search(app_document, paths).map do |node|
+          app_document.children.map do |node|
             new_instance.properties[node.name.to_sym] = node.text
           end
 

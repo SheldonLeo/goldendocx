@@ -3,7 +3,7 @@
 describe Goldendocx::Parts::App do
   let(:app) { described_class.new }
   let(:docx_file) { Zip::File.new('spec/fixtures/BlankDocxTemplate.docx') }
-  let(:app_xml) { Goldendocx.xml_serializer.parse(docx_file.read(described_class::XML_PATH)) }
+  let(:app_xml) { docx_file.read(described_class::XML_PATH) }
 
   describe '#to_document_xml' do
     let(:xml) { app.to_document_xml }
@@ -19,7 +19,7 @@ describe Goldendocx::Parts::App do
     end
 
     specify 'keeps original app.xml' do
-      app = described_class.read_from(app_xml)
+      app = described_class.parse(app_xml)
       xml = app.to_document_xml
       expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
