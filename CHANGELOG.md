@@ -30,7 +30,7 @@ Mostly refactoring
 - Introduce `ActiveSupport` to make coding easier
 - Clean irrelevant demos
 
-## [0.2.2] - 2023-03-31(WIP)
+## [0.2.2] - 2023-03-31
 
 ### Features
 
@@ -41,3 +41,9 @@ Mostly refactoring
 
 - Fix create charts issues
 - Fix Nokogiri XML serializer compatible issues
+
+## [0.2.3] - 2023-04-07
+
+### Features
+
+- Support create new MS Word docx file without template
