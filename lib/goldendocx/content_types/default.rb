@@ -6,13 +6,9 @@ module Goldendocx
       include Goldendocx::Element
 
       tag :Default
-      attribute :extension, alias_name: :Extension, readonly: true
-      attribute :content_type, alias_name: :ContentType, readonly: true
 
-      def initialize(extension, content_type)
-        @extension = extension.to_s
-        @content_type = content_type.to_s
-      end
+      attribute :extension, alias_name: :Extension
+      attribute :content_type, alias_name: :ContentType
 
       def ==(other)
         extension == other.extension && content_type == other.content_type

@@ -16,7 +16,7 @@ module Goldendocx
 
       relationships_at RELATIONSHIPS_XML_PATH
       associate :styles, class_name: 'Goldendocx::Documents::Styles'
-      associate :document, class_name: 'Goldendocx::Documents::Document', relationship: false
+      associate :document, class_name: 'Goldendocx::Documents::Document', isolate: true
 
       class << self
         def read_from(docx_file)
@@ -32,7 +32,7 @@ module Goldendocx
         associations.each do |association, options|
           association_class = options[:class_name].constantize
           instance_variable_set("@#{association}", association_class.new)
-          add_relationship association_class::TYPE, association_class::XML_PATH if options[:relationship]
+          add_relationship association_class::TYPE, association_class::XML_PATH unless options[:isolate]
         end
 
         @medias = []

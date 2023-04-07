@@ -2,6 +2,7 @@
 
 describe Goldendocx::Parts::ContentTypes do
   let(:docx_file) { Zip::File.new('spec/fixtures/BlankDocxTemplate.docx') }
+  let(:xml) { docx_file.read(described_class::XML_PATH) }
 
   specify 'sets required defaults when initialized' do
     content_types = described_class.new
@@ -11,9 +12,9 @@ describe Goldendocx::Parts::ContentTypes do
     expect(content_types.overrides.size).to eq(0)
   end
 
-  describe '.read_from' do
+  describe '.parse' do
     it 'reads from docx file and parse defaults and overrides' do
-      content_types = described_class.read_from(docx_file)
+      content_types = described_class.parse(xml)
 
       expect(content_types.defaults.size).to eq(2)
       expect(content_types.overrides.size).to eq(8)

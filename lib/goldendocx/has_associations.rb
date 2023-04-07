@@ -16,9 +16,9 @@ module Goldendocx
         self.relationships_xml_path = xml_path
       end
 
-      def associate(name, class_name:, relationship: true)
+      def associate(name, class_name:, isolate: false)
         named = name.to_s
-        associations[named] = { class_name: class_name, relationship: relationship }
+        associations[named] = { class_name: class_name, isolate: isolate }
 
         define_method named do
           return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
