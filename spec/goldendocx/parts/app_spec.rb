@@ -12,7 +12,7 @@ describe Goldendocx::Parts::App do
       expected_xml = <<~XML.gsub(/(^\s+)|\n/, '')
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
-          <Application>Goldendocx_0.2.3</Application>
+          <Application>Goldendocx_#{Goldendocx::VERSION}</Application>
         </Properties>
       XML
       expect(xml).to eq(expected_xml)

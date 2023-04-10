@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    goldendocx (0.2.3)
+    goldendocx (0.3.0)
       activesupport (~> 7.0)
       nokogiri (~> 1.14)
       ox (~> 2.14)

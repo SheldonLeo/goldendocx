@@ -47,3 +47,9 @@ Mostly refactoring
 ### Features
 
 - Support create new MS Word docx file without template
+
+## [0.3.0] - 2023-04-10
+
+### Features
+
+- Upgrade ruby version from `2.7.6` to `3.2.0`
