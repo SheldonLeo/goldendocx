@@ -64,13 +64,13 @@ module Goldendocx
     end
 
     def create_image(image_data, options = {})
-      ensure_image_content_type!(image_data)
-      documents.create_image(image_data, options)
+      type = ensure_image_content_type!(image_data)
+      documents.create_image(image_data, type, options)
     end
 
     def create_embed_image(image_data, options = {})
-      ensure_image_content_type!(image_data)
-      documents.create_embed_image(image_data, options)
+      type = ensure_image_content_type!(image_data)
+      documents.create_embed_image(image_data, type, options)
     end
 
     def add_style(style_path)
@@ -106,10 +106,11 @@ module Goldendocx
       @unstructured_entries = []
     end
 
-    def ensure_image_content_type!(_image_data)
-      extension = 'png'
-      content_type = 'image/png'
+    def ensure_image_content_type!(image_data)
+      extension = Utils::ImageUtil.guess_image_type(image_data)
+      content_type = Utils::ImageUtil::IMAGE_MIME_TYPES[extension]
       content_types.add_default(extension, content_type)
+      extension
     end
 
     def ensure_chart_content_type!(chart)

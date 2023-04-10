@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'zip'
+require 'utils/image_util'
 require 'extensions/active_support_extensions'
 require 'extensions/xml_serialize_extensions'
 

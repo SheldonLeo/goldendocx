@@ -75,9 +75,9 @@ describe Goldendocx::Docx do
 
     it 'creates table with embed image on word document' do
       expect do
-        image = docx.create_embed_image(image, width: 5000)
+        embed_image = docx.create_embed_image(image, width: 5000)
         table = docx.create_table
-        table.add_row([Goldendocx::Tables::ImageCell.new(image:)])
+        table.add_row([Goldendocx::Tables::ImageCell.new(image: embed_image)])
         expect(table).to be_a(Goldendocx::Components::Table)
       end.to change { document.body.components.size }.by(1)
     end

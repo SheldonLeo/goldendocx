@@ -71,25 +71,24 @@ module Goldendocx
         table
       end
 
-      def create_image(image_data, options = {})
-        image_media = add_image_media(image_data, options)
-        relationship_id = add_relationship(image_media.type, image_media.target)
+      def create_image(image_data, type, options = {})
+        image_media = add_image_media(image_data, type, options)
+        relationship_id = add_relationship(Goldendocx::Parts::Media::TYPE, image_media.target)
 
         document.body.create_image(relationship_id, options)
       end
 
-      def create_embed_image(image_data, options = {})
-        image_media = add_image_media(image_data, options)
-        relationship_id = add_relationship(image_media.type, image_media.target)
+      def create_embed_image(image_data, type, options = {})
+        image_media = add_image_media(image_data, type, options)
+        relationship_id = add_relationship(Goldendocx::Parts::Media::TYPE, image_media.target)
 
         document.body.create_embed_image(relationship_id, options)
       end
 
-      def add_image_media(image_data, _options = {})
-        extension = 'png'
+      def add_image_media(image_data, type, _options = {})
         # Add to media
         @media_amount += 1
-        image_name = "image#{media_amount}.#{extension}"
+        image_name = "image#{media_amount}.#{type}"
         Goldendocx::Parts::Media.new(image_name, image_data).tap do |media|
           medias << media
         end
