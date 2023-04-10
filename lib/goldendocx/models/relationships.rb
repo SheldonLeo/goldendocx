@@ -23,7 +23,7 @@ module Goldendocx
 
       def add_relationship(type, target)
         relationship_id = "rId#{relationships.size + 1}"
-        build_relationship(id: relationship_id, type: type, target: target)
+        build_relationship(id: relationship_id, type:, target:)
         relationship_id
       end
     end

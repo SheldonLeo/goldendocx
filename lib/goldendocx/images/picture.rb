@@ -31,7 +31,7 @@ module Goldendocx
         return unless relationship_id
 
         non_visual_picture.non_visual_drawing.assign_attributes(
-          relationship_id: relationship_id,
+          relationship_id:,
           name: "#{relationship_id}.png"
         )
         picture_fill.blip.relationship_id = relationship_id

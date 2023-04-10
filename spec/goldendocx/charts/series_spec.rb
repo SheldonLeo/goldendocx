@@ -5,7 +5,7 @@ describe Goldendocx::Charts::Series do
   let(:values) { [] }
   let(:attributes) { {} }
 
-  let(:series) { described_class.new(categories: categories, values: values, **attributes) }
+  let(:series) { described_class.new(categories:, values:, **attributes) }
 
   describe '#to_xml' do
     let(:xml) { series.to_xml }

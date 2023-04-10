@@ -27,9 +27,9 @@ image_base64 = File.read("#{Dir.pwd}/demo/templates/image_base64")
 image = docx.create_embed_image(image_base64, width: 720000, height: 720000, align: :left)
 
 rows = [
-  [Goldendocx::Tables::ImageCell.new(image: image, content: '选项A'), 3, '¥3.00', '¥9.00'],
-  [Goldendocx::Tables::ImageCell.new(image: image, content: '选项B'), 4, '¥6.50', '¥18.00'],
-  [Goldendocx::Tables::ImageCell.new(image: image, content: '选项C'), 10, '¥6.00', '¥60.00']
+  [Goldendocx::Tables::ImageCell.new(image:, content: '选项A'), 3, '¥3.00', '¥9.00'],
+  [Goldendocx::Tables::ImageCell.new(image:, content: '选项B'), 4, '¥6.50', '¥18.00'],
+  [Goldendocx::Tables::ImageCell.new(image:, content: '选项C'), 10, '¥6.00', '¥60.00']
 ]
 rows.each do |r|
   row = table.add_row(r)

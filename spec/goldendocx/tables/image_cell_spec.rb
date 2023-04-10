@@ -2,7 +2,7 @@
 
 describe Goldendocx::Tables::ImageCell do
   let(:image) { Goldendocx::Components::Image.new(relationship_id: 'rId1') }
-  let(:cell) { described_class.new(image: image) }
+  let(:cell) { described_class.new(image:) }
 
   describe '#to_xml' do
     let(:xml) { cell.to_xml }

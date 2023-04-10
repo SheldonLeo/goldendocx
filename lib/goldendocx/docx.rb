@@ -89,9 +89,9 @@ module Goldendocx
 
     def build_default
       associations.each do |association, options|
-        association_class = options[:class_name].constantize
+        association_class = options.class_name.constantize
         instance_variable_set("@#{association}", association_class.new)
-        add_relationship association_class::TYPE, association_class::XML_PATH unless options[:isolate]
+        add_relationship association_class::TYPE, association_class::XML_PATH unless options.isolate
       end
 
       content_types.add_override "/#{Goldendocx::Parts::App::XML_PATH}", Goldendocx::Parts::App::CONTENT_TYPE

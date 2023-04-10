@@ -32,9 +32,9 @@ module Goldendocx
 
       def initialize
         associations.each do |association, options|
-          association_class = options[:class_name].constantize
+          association_class = options.class_name.constantize
           instance_variable_set("@#{association}", association_class.new)
-          add_relationship association_class::TYPE, association_class::XML_PATH.gsub(XML_PATH, '') unless options[:isolate]
+          add_relationship association_class::TYPE, association_class::XML_PATH.gsub(XML_PATH, '') unless options.isolate
         end
 
         @medias = []
@@ -105,7 +105,7 @@ module Goldendocx
           format(Goldendocx::Charts::RELATIONSHIP_NAME_PATTERN, id: chart_id)
         )
 
-        document.body.create_chart(chart_type, chart_id, relationship_id, width: width, height: height)
+        document.body.create_chart(chart_type, chart_id, relationship_id, width:, height:)
       end
 
       def add_style(fragment)

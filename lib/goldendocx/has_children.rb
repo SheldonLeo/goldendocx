@@ -18,7 +18,7 @@ module Goldendocx
       def embeds_one(name, class_name:, auto_build: false)
         warning_naming_suggestion(__method__, name, name.to_s.singularize)
 
-        options = { class_name: class_name, multiple: false, auto_build: auto_build }
+        options = { class_name:, multiple: false, auto_build: }
         self.children = children.merge(name => options)
 
         create_children_getter(name)
@@ -29,7 +29,7 @@ module Goldendocx
       def embeds_many(name, class_name:, uniqueness: false)
         warning_naming_suggestion(__method__, name, name.to_s.pluralize)
 
-        options = { class_name: class_name, multiple: true, uniqueness: uniqueness }
+        options = { class_name:, multiple: true, uniqueness: }
         self.children = children.merge(name => options)
 
         create_children_getter(name)

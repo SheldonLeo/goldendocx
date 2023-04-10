@@ -24,7 +24,7 @@ module Goldendocx
 
       def initialize
         REQUIRED_DEFAULTS.map do |extension, content_type|
-          build_defaults(extension: extension, content_type: content_type)
+          build_defaults(extension:, content_type:)
         end
       end
 
@@ -36,13 +36,13 @@ module Goldendocx
       def add_default(extension, content_type)
         return if defaults.any? { |default| extension == default.extension && content_type == default.content_type }
 
-        build_defaults(extension: extension, content_type: content_type)
+        build_defaults(extension:, content_type:)
       end
 
       def add_override(part_name, content_type)
         return if overrides.any? { |override| part_name == override.part_name && content_type == override.content_type }
 
-        build_override(part_name: part_name, content_type: content_type)
+        build_override(part_name:, content_type:)
       end
     end
   end

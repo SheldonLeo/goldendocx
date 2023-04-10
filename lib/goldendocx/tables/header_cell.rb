@@ -9,7 +9,7 @@ module Goldendocx
       end
 
       def width=(width, type: :dxa)
-        property.width.assign_attributes(width: width, type: type)
+        property.width.assign_attributes(width:, type:)
       end
     end
   end
