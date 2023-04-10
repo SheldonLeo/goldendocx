@@ -27,7 +27,7 @@ module Goldendocx
       def categories=(categories)
         category_axis.values.build_count(count: categories.size)
         categories.each_with_index do |cat, index|
-          point = category_axis.values.build_point(index: index)
+          point = category_axis.values.build_point(index:)
           point.build_value(value: cat)
         end
       end
@@ -35,7 +35,7 @@ module Goldendocx
       def values=(values)
         value_axis.values.build_count(count: values.size)
         values.each_with_index do |val, index|
-          point = value_axis.values.build_point(index: index)
+          point = value_axis.values.build_point(index:)
           point.build_value(value: val)
         end
       end

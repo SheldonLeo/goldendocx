@@ -49,7 +49,7 @@ module Goldendocx
       end
 
       def create_text(text, options = {})
-        text = build_text(text: text, **options.slice(:align, :color, :bold))
+        text = build_text(text:, **options.slice(:align, :color, :bold))
 
         components << text
 
@@ -66,7 +66,7 @@ module Goldendocx
       end
 
       def create_image(relationship_id, options)
-        image = build_image(relationship_id: relationship_id, width: options[:width], height: options[:height])
+        image = build_image(relationship_id:, width: options[:width], height: options[:height])
 
         components << image
 
@@ -74,7 +74,7 @@ module Goldendocx
       end
 
       def create_embed_image(relationship_id, options)
-        Goldendocx::Components::Image.new(relationship_id: relationship_id, width: options[:width], height: options[:height])
+        Goldendocx::Components::Image.new(relationship_id:, width: options[:width], height: options[:height])
       end
 
       def ensure_chart_type(chart_type)

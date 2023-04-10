@@ -25,8 +25,8 @@ module Goldendocx
       end
     end
 
-    def to_document_xml(&block)
-      Goldendocx.xml_serializer.build_document_xml(tag_name, concerned_namespaces, ignorable_namespaces) { |xml| build_element(xml, &block) }
+    def to_document_xml(&)
+      Goldendocx.xml_serializer.build_document_xml(tag_name, concerned_namespaces, ignorable_namespaces) { |xml| build_element(xml, &) }
     end
   end
 end

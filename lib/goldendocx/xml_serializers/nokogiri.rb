@@ -32,12 +32,12 @@ module Goldendocx
           node.xpath(search_paths.join('/'), namespaces)
         end
 
-        def build_xml(tag, &block)
-          CGI.unescapeHTML build_element(tag, &block).to_xml(indent: 0, save_with: DEFAULT_BUILD_OPTIONS).delete("\n")
+        def build_xml(tag, &)
+          CGI.unescapeHTML build_element(tag, &).to_xml(indent: 0, save_with: DEFAULT_BUILD_OPTIONS).delete("\n")
         end
 
-        def build_document_xml(tag, namespaces = [], ignore_namespaces = [], &block)
-          CGI.unescapeHTML build_document(tag, namespaces, ignore_namespaces, &block).to_xml(indent: 0).delete("\n")
+        def build_document_xml(tag, namespaces = [], ignore_namespaces = [], &)
+          CGI.unescapeHTML build_document(tag, namespaces, ignore_namespaces, &).to_xml(indent: 0).delete("\n")
         end
 
         def build_document(tag, namespaces = [], ignore_namespaces = [])

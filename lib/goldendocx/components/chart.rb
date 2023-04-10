@@ -24,15 +24,15 @@ module Goldendocx
 
         @paragraph = Goldendocx::Components::Paragraph.new
         inline_drawing = @paragraph.build_run.build_drawing.build_inline
-        inline_drawing.build_non_visual_property(relationship_id: relationship_id)
+        inline_drawing.build_non_visual_property(relationship_id:)
         inline_drawing.build_extents(width: attributes[:width], height: attributes[:height])
-        inline_drawing.build_graphic.build_data.build_chart(relationship_id: relationship_id)
+        inline_drawing.build_graphic.build_data.build_chart(relationship_id:)
       end
 
       def add_series(name, categories, values)
         ser_id = series.size + 1
-        the_chart.build_series(categories: categories, values: values, id: ser_id, name: name)
-        ser = Goldendocx::Charts::Series.new(categories: categories, values: values, id: ser_id, name: name)
+        the_chart.build_series(categories:, values:, id: ser_id, name:)
+        ser = Goldendocx::Charts::Series.new(categories:, values:, id: ser_id, name:)
         series << ser
         ser
       end
@@ -46,7 +46,7 @@ module Goldendocx
       end
 
       def write_to(zos)
-        entry_name = format(Goldendocx::Charts::RELATIONSHIP_NAME_PATTERN, id: id)
+        entry_name = format(Goldendocx::Charts::RELATIONSHIP_NAME_PATTERN, id:)
         zos.put_next_entry "word/#{entry_name}"
         zos.write to_document_xml
       end

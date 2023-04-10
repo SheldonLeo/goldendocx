@@ -4,7 +4,7 @@ require 'extensions/ox_extensions'
 
 module Goldendocx
   module XmlSerializers
-    class Ox
+    module Ox
       class << self
         def parse(xml, paths = [])
           xml = ::Ox.parse(xml)
@@ -18,13 +18,13 @@ module Goldendocx
           node.locate(paths.join('/'))
         end
 
-        def build_xml(tag, &block)
-          xml = build_element(tag, &block)
+        def build_xml(tag, &)
+          xml = build_element(tag, &)
           ::Ox.dump(xml, indent: -1, with_xml: true, encoding: 'UTF-8')
         end
 
-        def build_document_xml(tag, namespaces = [], ignore_namespaces = [], &block)
-          xml = build_document(tag, namespaces, ignore_namespaces, &block)
+        def build_document_xml(tag, namespaces = [], ignore_namespaces = [], &)
+          xml = build_document(tag, namespaces, ignore_namespaces, &)
           ::Ox.dump(xml, indent: -1, with_xml: true)
         end
 

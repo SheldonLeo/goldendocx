@@ -14,11 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: [ '2.7' ]
+        ruby-version: [ '3.2' ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up
-        uses: ruby/setup-ruby@ee2113536afb7f793eed4ce60e8d3b26db912da4
+        uses: ruby/setup-ruby@904f3fef85a9c80a3750cbe7d5159268fd5caa9f
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true

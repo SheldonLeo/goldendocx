@@ -77,7 +77,7 @@ describe Goldendocx::Docx do
       expect do
         image = docx.create_embed_image(image, width: 5000)
         table = docx.create_table
-        table.add_row([Goldendocx::Tables::ImageCell.new(image: image)])
+        table.add_row([Goldendocx::Tables::ImageCell.new(image:)])
         expect(table).to be_a(Goldendocx::Components::Table)
       end.to change { document.body.components.size }.by(1)
     end

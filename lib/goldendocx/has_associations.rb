@@ -11,6 +11,8 @@ module Goldendocx
       delegate :add_relationship, to: :relationships
     end
 
+    Options = Data.define(:class_name, :isolate)
+
     class_methods do
       def relationships_at(xml_path)
         self.relationships_xml_path = xml_path
@@ -18,7 +20,7 @@ module Goldendocx
 
       def associate(name, class_name:, isolate: false)
         named = name.to_s
-        associations[named] = { class_name: class_name, isolate: isolate }
+        associations[named] = Options.new(class_name:, isolate:)
 
         define_method named do
           return instance_variable_get("@#{name}") if instance_variable_defined?("@#{name}")
@@ -31,7 +33,7 @@ module Goldendocx
 
     def read_associations(docx_file)
       associations.each do |association, options|
-        association_class = options[:class_name].constantize
+        association_class = options.class_name.constantize
         association_document_xml = docx_file.read(association_class::XML_PATH)
         instance_variable_set("@#{association}", association_class.parse(association_document_xml))
       end

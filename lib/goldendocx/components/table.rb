@@ -29,8 +29,8 @@ module Goldendocx
       end
 
       def add_header(title, width: nil)
-        header.build_cell(content: title, width: width)
-        grid_property.build_grid_column(width: width) if width
+        header.build_cell(content: title, width:)
+        grid_property.build_grid_column(width:) if width
         header
       end
 

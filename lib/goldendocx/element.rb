@@ -64,12 +64,12 @@ module Goldendocx
       @tag_name ||= [namespace, tag].compact.join(':')
     end
 
-    def to_element(**context, &block)
-      Goldendocx.xml_serializer.build_element(tag_name, **context) { |xml| build_element(xml, &block) }
+    def to_element(**context, &)
+      Goldendocx.xml_serializer.build_element(tag_name, **context) { |xml| build_element(xml, &) }
     end
 
-    def to_xml(&block)
-      Goldendocx.xml_serializer.build_xml(tag_name) { |xml| build_element(xml, &block) }
+    def to_xml(&)
+      Goldendocx.xml_serializer.build_xml(tag_name) { |xml| build_element(xml, &) }
     end
 
     def build_element(xml)
